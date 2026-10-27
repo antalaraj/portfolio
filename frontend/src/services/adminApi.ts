@@ -260,7 +260,11 @@ export const adminApi = {
     const headers: Record<string, string> = {};
     if (match) headers["X-CSRFToken"] = match[1];
 
-    const res = await fetch("http://127.0.0.1:8000/api/v1/admin/media/upload/", {
+    const baseUrl = typeof window !== "undefined"
+      ? (process.env.NEXT_PUBLIC_API_URL || "/api/v1")
+      : (process.env.INTERNAL_API_URL ? `${process.env.INTERNAL_API_URL}/api/v1` : "http://127.0.0.1:8000/api/v1");
+
+    const res = await fetch(`${baseUrl}/admin/media/upload/`, {
       method: "POST",
       body: formData,
       credentials: "include",

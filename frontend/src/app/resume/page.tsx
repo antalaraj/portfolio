@@ -67,56 +67,68 @@ export default async function ResumePage() {
         {/* Structured Resume Canvas */}
         <div className="bg-white rounded-xl border border-gray-200 p-8 sm:p-12 shadow-xs">
           {/* Header */}
-          <div className="border-b border-gray-200 pb-8">
-            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
-              {profile.full_name}
-            </h1>
-            <p className="text-base font-semibold text-blue-600 mt-1">
-              {profile.headline}
-            </p>
+          <div className="border-b border-gray-200 pb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+            <div>
+              <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
+                {profile.full_name}
+              </h1>
+              <p className="text-base font-semibold text-blue-600 mt-1">
+                {profile.headline}
+              </p>
 
-            <div className="mt-4 flex flex-wrap gap-y-2 gap-x-6 text-xs text-slate-600">
-              {profile.email && (
-                <span className="flex items-center gap-1.5">
-                  <Mail className="w-3.5 h-3.5 text-slate-400" />
-                  {profile.email}
-                </span>
-              )}
-              {profile.phone && (
-                <span className="flex items-center gap-1.5">
-                  <Phone className="w-3.5 h-3.5 text-slate-400" />
-                  {profile.phone}
-                </span>
-              )}
-              {profile.location && (
-                <span className="flex items-center gap-1.5">
-                  <MapPin className="w-3.5 h-3.5 text-slate-400" />
-                  {profile.location}
-                </span>
-              )}
-              {profile.github_url && (
-                <a
-                  href={profile.github_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 hover:text-blue-600"
-                >
-                  <GithubIcon className="w-3.5 h-3.5 text-slate-400" />
-                  GitHub
-                </a>
-              )}
-              {profile.linkedin_url && (
-                <a
-                  href={profile.linkedin_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 hover:text-blue-600"
-                >
-                  <LinkedinIcon className="w-3.5 h-3.5 text-slate-400" />
-                  LinkedIn
-                </a>
-              )}
+              <div className="mt-4 flex flex-wrap gap-y-2 gap-x-6 text-xs text-slate-600">
+                {profile.email && (
+                  <span className="flex items-center gap-1.5">
+                    <Mail className="w-3.5 h-3.5 text-slate-400" />
+                    {profile.email}
+                  </span>
+                )}
+                {profile.phone && (
+                  <span className="flex items-center gap-1.5">
+                    <Phone className="w-3.5 h-3.5 text-slate-400" />
+                    {profile.phone}
+                  </span>
+                )}
+                {profile.location && (
+                  <span className="flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                    {profile.location}
+                  </span>
+                )}
+                {profile.github_url && (
+                  <a
+                    href={profile.github_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 hover:text-blue-600"
+                  >
+                    <GithubIcon className="w-3.5 h-3.5 text-slate-400" />
+                    GitHub
+                  </a>
+                )}
+                {profile.linkedin_url && (
+                  <a
+                    href={profile.linkedin_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 hover:text-blue-600"
+                  >
+                    <LinkedinIcon className="w-3.5 h-3.5 text-slate-400" />
+                    LinkedIn
+                  </a>
+                )}
+              </div>
             </div>
+
+            {profile.avatar_url && (
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border-2 border-gray-200 shadow-sm shrink-0">
+                <img
+                  src={profile.avatar_url}
+                  alt={profile.full_name}
+                  className="w-full h-full object-cover object-center"
+                />
+              </div>
+            )}
           </div>
 
           {/* Professional Summary */}

@@ -69,7 +69,7 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen bg-white text-gray-900 flex flex-col">
-      <Navbar items={navigationItems} resumeUrl={profile.resume_file_url || "/resume"} />
+      <Navbar items={navigationItems} resumeUrl={profile.resume_file_url || "/resume"} avatarUrl={profile.avatar_url} />
 
       <main className="flex-1">
         {/* Hero Section */}

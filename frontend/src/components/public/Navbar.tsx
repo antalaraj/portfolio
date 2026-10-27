@@ -8,9 +8,10 @@ import { NavigationItem } from "@/types";
 interface NavbarProps {
   items?: NavigationItem[];
   resumeUrl?: string;
+  avatarUrl?: string;
 }
 
-export function Navbar({ items = [], resumeUrl = "/resume" }: NavbarProps) {
+export function Navbar({ items = [], resumeUrl = "/resume", avatarUrl }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -40,10 +41,20 @@ export function Navbar({ items = [], resumeUrl = "/resume" }: NavbarProps) {
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-8 h-8 rounded-md bg-blue-600 text-white font-bold flex items-center justify-center text-sm tracking-tight shadow-xs group-hover:bg-blue-700 transition-colors">
-            RA
-          </div>
+        <Link href="/" className="flex items-center gap-2.5 group">
+          {avatarUrl ? (
+            <div className="w-8 h-8 rounded-full overflow-hidden border border-gray-200 shadow-2xs shrink-0">
+              <img
+                src={avatarUrl}
+                alt="Raj Antala"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ) : (
+            <div className="w-8 h-8 rounded-md bg-blue-600 text-white font-bold flex items-center justify-center text-sm tracking-tight shadow-xs group-hover:bg-blue-700 transition-colors">
+              RA
+            </div>
+          )}
           <span className="font-semibold text-gray-900 tracking-tight text-base group-hover:text-blue-600 transition-colors">
             Raj Antala
           </span>
