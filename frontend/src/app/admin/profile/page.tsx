@@ -62,6 +62,23 @@ export default function AdminProfilePage() {
     }
   };
 
+  const handleToggleExperienceBadge = async (enabled: boolean) => {
+    setProfile((prev) => ({ ...prev, show_experience_badge: enabled }));
+    try {
+      await adminApi.updateProfile({ show_experience_badge: enabled });
+      setMessage({
+        type: "success",
+        text: `Hero Experience Badge ${enabled ? "enabled" : "hidden"} successfully!`,
+      });
+    } catch {
+      setMessage({
+        type: "error",
+        text: "Failed to update badge visibility.",
+      });
+    }
+  };
+
+
   if (loading) {
     return (
       <div className="p-12 text-center text-xs text-slate-500 flex items-center justify-center gap-2">
@@ -292,9 +309,7 @@ export default function AdminProfilePage() {
               <input
                 type="checkbox"
                 checked={profile.show_experience_badge ?? true}
-                onChange={(e) =>
-                  setProfile({ ...profile, show_experience_badge: e.target.checked })
-                }
+                onChange={(e) => handleToggleExperienceBadge(e.target.checked)}
                 className="sr-only peer"
               />
               <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>

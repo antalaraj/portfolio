@@ -21,22 +21,29 @@ export function HeroSection({ profile, config = {} }: HeroSectionProps) {
   const ctaSecondaryLink = config.cta_secondary_link || "/resume";
 
   // Experience highlight badge on hero photo (configurable & toggleable by admin)
-  const showExperienceBadge =
-    config.show_experience_badge !== undefined
-      ? Boolean(config.show_experience_badge)
-      : profile.show_experience_badge !== undefined
+  const isProfileBadgeEnabled =
+    profile.show_experience_badge !== undefined
       ? Boolean(profile.show_experience_badge)
       : true;
 
+  const isConfigBadgeEnabled =
+    config.show_experience_badge !== undefined
+      ? Boolean(config.show_experience_badge)
+      : true;
+
+  // If the admin turned it off in Profile settings OR in the Section Builder, hide it
+  const showExperienceBadge = isProfileBadgeEnabled && isConfigBadgeEnabled;
+
   const experienceBadgeTitle =
-    config.experience_badge_title ||
     profile.experience_badge_title ||
+    config.experience_badge_title ||
     "3+ Years Experience";
 
   const experienceBadgeSubtitle =
-    config.experience_badge_subtitle ||
     profile.experience_badge_subtitle ||
+    config.experience_badge_subtitle ||
     "AI / ML Production Systems";
+
 
   return (
     <section id="hero" className="pt-32 pb-20 md:pt-40 md:pb-28 bg-white border-b border-gray-100 overflow-hidden">
