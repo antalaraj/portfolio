@@ -134,26 +134,16 @@ export function SkillsGrid({
                 </span>
               </h3>
 
-              <div className="mt-4 space-y-4">
+              <div className="mt-4 flex flex-wrap gap-2">
                 {category.skills?.map((skill) => {
                   const Icon = ICON_MAP[skill.icon_name] || Wrench;
                   return (
-                    <div key={skill.id} className="group">
-                      <div className="flex items-center justify-between text-xs font-medium text-gray-800 mb-1.5">
-                        <span className="flex items-center gap-2">
-                          <Icon className="w-3.5 h-3.5 text-blue-600" />
-                          {skill.name}
-                        </span>
-                        <span className="text-slate-500 font-mono text-[11px]">
-                          {skill.proficiency}%
-                        </span>
-                      </div>
-                      <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                        <div
-                          className="bg-blue-600 h-1.5 rounded-full transition-all duration-500 group-hover:bg-blue-700"
-                          style={{ width: `${skill.proficiency}%` }}
-                        />
-                      </div>
+                    <div
+                      key={skill.id}
+                      className="inline-flex items-center gap-2 px-3 py-2 rounded-md bg-slate-50 border border-gray-200 text-xs font-medium text-gray-800 hover:border-blue-400 hover:bg-blue-50/50 hover:text-blue-900 transition-all shadow-2xs group"
+                    >
+                      <Icon className="w-3.5 h-3.5 text-blue-600 group-hover:scale-110 transition-transform" />
+                      <span>{skill.name}</span>
                     </div>
                   );
                 })}

@@ -41,15 +41,21 @@ export default function AdminSkillsPage() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingSkill) return;
-    setSaving(true);
+    const payload = {
+      ...editingSkill,
+      proficiency: editingSkill.proficiency || 100,
+    };
+
     try {
       if (isNew) {
-        const res = await adminApi.createSkill(editingSkill);
-        setSkills([...skills, res.data]);
+        const res = await adminApi.createSkill(payload);
+        const newSkill = (res as any)?.data || res;
+        setSkills([...(Array.isArray(skills) ? skills : []), newSkill]);
         setMessage({ type: "success", text: "Skill added successfully!" });
       } else {
-        const res = await adminApi.updateSkill(editingSkill.id!, editingSkill);
-        setSkills(skills.map((s) => (s.id === editingSkill.id ? res.data : s)));
+        const res = await adminApi.updateSkill(editingSkill.id!, payload);
+        const updated = (res as any)?.data || res;
+        setSkills((Array.isArray(skills) ? skills : []).map((s) => (s.id === editingSkill.id ? updated : s)));
         setMessage({ type: "success", text: "Skill updated successfully!" });
       }
       setEditingSkill(null);
@@ -139,7 +145,6 @@ export default function AdminSkillsPage() {
                 <tr>
                   <th className="py-3 px-4">Skill Name</th>
                   <th className="py-3 px-4">Category</th>
-                  <th className="py-3 px-4">Proficiency</th>
                   <th className="py-3 px-4">Icon Name</th>
                   <th className="py-3 px-4 text-right">Actions</th>
                 </tr>
@@ -151,18 +156,7 @@ export default function AdminSkillsPage() {
                     <td className="py-3 px-4 text-slate-600">
                       {s.category_name || "Uncategorized"}
                     </td>
-                    <td className="py-3 px-4">
-                      <div className="flex items-center gap-2">
-                        <div className="w-24 bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                          <div
-                            className="bg-blue-600 h-1.5 rounded-full"
-                            style={{ width: `${s.proficiency}%` }}
-                          />
-                        </div>
-                        <span className="font-mono text-slate-500 text-[11px]">{s.proficiency}%</span>
-                      </div>
-                    </td>
-                    <td className="py-3 px-4 font-mono text-slate-500">{s.icon_name}</td>
+                    <td className="py-3 px-4 font-mono text-slate-500">{s.icon_name || "Code2"}</td>
                     <td className="py-3 px-4 text-right space-x-1">
                       <button
                         onClick={() => {
@@ -228,24 +222,6 @@ export default function AdminSkillsPage() {
                     </option>
                   ))}
                 </select>
-              </div>
-
-              <div>
-                <div className="flex justify-between items-center mb-1">
-                  <label className="font-semibold text-gray-800">
-                    Proficiency: {editingSkill.proficiency}%
-                  </label>
-                </div>
-                <input
-                  type="range"
-                  min="1"
-                  max="100"
-                  value={editingSkill.proficiency || 80}
-                  onChange={(e) =>
-                    setEditingSkill({ ...editingSkill, proficiency: parseInt(e.target.value) })
-                  }
-                  className="w-full"
-                />
               </div>
 
               <div>
