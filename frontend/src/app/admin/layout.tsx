@@ -11,43 +11,29 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [checkingAuth, setCheckingAuth] = useState(pathname !== "/admin/login");
+  const [mounted, setMounted] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
   useEffect(() => {
+    setMounted(true);
     if (pathname === "/admin/login") {
       setCheckingAuth(false);
       return;
     }
 
-    let isMounted = true;
     adminApi
       .getMe()
       .then(() => {
-        if (isMounted) setCheckingAuth(false);
+        setCheckingAuth(false);
       })
       .catch(() => {
-        if (isMounted) {
-          router.replace("/admin/login");
-        }
+        router.replace("/admin/login");
       });
-
-    return () => {
-      isMounted = false;
-    };
   }, [pathname, router]);
 
   // If on the login page, render clean full screen without admin chrome
   if (pathname === "/admin/login") {
     return <>{children}</>;
-  }
-
-  if (checkingAuth) {
-    return (
-      <div className="min-h-screen bg-white flex flex-col items-center justify-center">
-        <Loader2 className="w-8 h-8 text-blue-600 animate-spin mb-3" />
-        <p className="text-sm font-medium text-slate-500">Verifying admin session...</p>
-      </div>
-    );
   }
 
   // Derive human readable page title from route
@@ -84,7 +70,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           title={getPageTitle(pathname)}
         />
         <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
-          {children}
+          {!mounted || checkingAuth ? (
+            <div className="flex flex-col items-center justify-center py-28">
+              <Loader2 className="w-8 h-8 text-blue-600 animate-spin mb-3" />
+              <p className="text-sm font-medium text-slate-500">Verifying admin session...</p>
+            </div>
+          ) : (
+            children
+          )}
         </main>
       </div>
     </div>
