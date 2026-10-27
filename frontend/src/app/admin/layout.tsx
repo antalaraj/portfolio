@@ -1,17 +1,53 @@
 "use client";
 
-import { useState } from "react";
-import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { AdminHeader } from "@/components/admin/AdminHeader";
+import { adminApi } from "@/services/adminApi";
+import { Loader2 } from "lucide-react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(pathname !== "/admin/login");
+
+  useEffect(() => {
+    if (pathname === "/admin/login") {
+      setCheckingAuth(false);
+      return;
+    }
+
+    let isMounted = true;
+    adminApi
+      .getMe()
+      .then(() => {
+        if (isMounted) setCheckingAuth(false);
+      })
+      .catch(() => {
+        if (isMounted) {
+          router.replace("/admin/login");
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [pathname, router]);
 
   // If on the login page, render clean full screen without admin chrome
   if (pathname === "/admin/login") {
     return <>{children}</>;
+  }
+
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center">
+        <Loader2 className="w-8 h-8 text-blue-600 animate-spin mb-3" />
+        <p className="text-sm font-medium text-slate-500">Verifying admin session...</p>
+      </div>
+    );
   }
 
   // Derive human readable page title from route
