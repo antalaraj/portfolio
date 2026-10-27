@@ -15,10 +15,11 @@ export function AdminHeader({ onToggleSidebar, title = "CMS Dashboard" }: AdminH
   const handleLogout = async () => {
     try {
       await adminApi.logout();
-      router.push("/admin/login");
-    } catch {
-      router.push("/admin/login");
+    } catch {}
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("admin_user");
     }
+    router.replace("/admin/login");
   };
 
   return (

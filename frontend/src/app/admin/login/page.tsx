@@ -21,8 +21,13 @@ export default function AdminLoginPage() {
       // First get fresh CSRF token
       await adminApi.getCsrf().catch(() => {});
       // Login with session cookie
-      await adminApi.login({ username, password });
-      router.push("/admin");
+      const res = await adminApi.login({ username, password });
+      if (typeof window !== "undefined") {
+        localStorage.setItem("admin_user", JSON.stringify(res.data?.user || { username }));
+        window.location.href = "/admin";
+      } else {
+        router.push("/admin");
+      }
     } catch (err: any) {
       setError(err?.message || "Invalid credentials. Please verify username and password.");
     } finally {

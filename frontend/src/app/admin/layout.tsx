@@ -21,14 +21,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       return;
     }
 
-    adminApi
-      .getMe()
-      .then(() => {
-        setCheckingAuth(false);
-      })
-      .catch(() => {
+    const storedUser = typeof window !== "undefined" ? localStorage.getItem("admin_user") : null;
+    if (!storedUser) {
+      router.replace("/admin/login");
+      return;
+    }
+
+    setCheckingAuth(false);
+
+    // Silently verify with backend in background
+    adminApi.getMe().catch((err: any) => {
+      if (err?.status === 401 || err?.status === 403) {
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("admin_user");
+        }
         router.replace("/admin/login");
-      });
+      }
+    });
   }, [pathname, router]);
 
   // If on the login page, render clean full screen without admin chrome
