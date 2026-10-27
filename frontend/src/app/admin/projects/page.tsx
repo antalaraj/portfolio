@@ -28,9 +28,11 @@ export default function AdminProjectsPage() {
     setLoading(true);
     try {
       const res = await adminApi.getProjects();
-      setProjects(res.data);
+      const items = (res as any)?.results || (res as any)?.data || (Array.isArray(res) ? res : []);
+      setProjects(Array.isArray(items) ? items : []);
     } catch {
       setMessage({ type: "error", text: "Failed to fetch projects." });
+      setProjects([]);
     } finally {
       setLoading(false);
     }
@@ -49,11 +51,13 @@ export default function AdminProjectsPage() {
     try {
       if (isNew) {
         const res = await adminApi.createProject(editingProject);
-        setProjects([res.data, ...projects]);
+        const newProj = (res as any)?.data || res;
+        setProjects([newProj, ...(Array.isArray(projects) ? projects : [])]);
         setMessage({ type: "success", text: "Project created successfully!" });
       } else {
         const res = await adminApi.updateProject(editingProject.id!, editingProject);
-        setProjects(projects.map((p) => (p.id === editingProject.id ? res.data : p)));
+        const updatedProj = (res as any)?.data || res;
+        setProjects((Array.isArray(projects) ? projects : []).map((p) => (p.id === editingProject.id ? updatedProj : p)));
         setMessage({ type: "success", text: "Project updated successfully!" });
       }
       setEditingProject(null);
@@ -68,15 +72,16 @@ export default function AdminProjectsPage() {
     if (!confirm(`Are you sure you want to delete "${title}"?`)) return;
     try {
       await adminApi.deleteProject(id);
-      setProjects(projects.filter((p) => p.id !== id));
+      setProjects((Array.isArray(projects) ? projects : []).filter((p) => p.id !== id));
       setMessage({ type: "success", text: `Deleted "${title}".` });
     } catch {
       setMessage({ type: "error", text: "Failed to delete project." });
     }
   };
 
-  const filteredProjects = projects.filter((p) =>
-    p.title.toLowerCase().includes(search.toLowerCase())
+  const safeProjects = Array.isArray(projects) ? projects : [];
+  const filteredProjects = safeProjects.filter((p) =>
+    (p.title || "").toLowerCase().includes(search.toLowerCase())
   );
 
   return (

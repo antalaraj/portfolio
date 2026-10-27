@@ -15,7 +15,8 @@ export default function AdminMediaLibraryPage() {
     setLoading(true);
     try {
       const res = await adminApi.getMedia();
-      setAssets(res.data);
+      const records = (res as any)?.results || (res as any)?.data || (Array.isArray(res) ? res : []);
+      setAssets(Array.isArray(records) ? records : []);
     } catch {
       setAssets([]);
     } finally {

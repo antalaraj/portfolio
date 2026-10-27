@@ -29,9 +29,12 @@ export default function WebsiteBuilderPage() {
     setLoading(true);
     try {
       const res = await adminApi.getSections("home");
-      setSections(res.data.sort((a, b) => a.display_order - b.display_order));
+      const records = (res as any)?.results || (res as any)?.data || (Array.isArray(res) ? res : []);
+      const items = Array.isArray(records) ? records : [];
+      setSections(items.sort((a, b) => a.display_order - b.display_order));
     } catch {
       setMessage({ type: "error", text: "Failed to load sections from backend." });
+      setSections([]);
     } finally {
       setLoading(false);
     }

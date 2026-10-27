@@ -17,9 +17,11 @@ export default function AdminCertificationsPage() {
     setLoading(true);
     try {
       const res = await adminApi.getCertifications();
-      setItems(res.data);
+      const records = (res as any)?.results || (res as any)?.data || (Array.isArray(res) ? res : []);
+      setItems(Array.isArray(records) ? records : []);
     } catch {
       setMessage({ type: "error", text: "Failed to load certifications." });
+      setItems([]);
     } finally {
       setLoading(false);
     }

@@ -17,7 +17,8 @@ export default function AdminContactInboxPage() {
     setLoading(true);
     try {
       const res = await adminApi.getContactMessages();
-      setMessages(res.data);
+      const records = (res as any)?.results || (res as any)?.data || (Array.isArray(res) ? res : []);
+      setMessages(Array.isArray(records) ? records : []);
     } catch {
       // offline fallback
       setMessages([]);

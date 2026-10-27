@@ -18,9 +18,11 @@ export default function AdminExperiencePage() {
     setLoading(true);
     try {
       const res = await adminApi.getExperience();
-      setItems(res.data);
+      const records = (res as any)?.results || (res as any)?.data || (Array.isArray(res) ? res : []);
+      setItems(Array.isArray(records) ? records : []);
     } catch {
       setMessage({ type: "error", text: "Failed to load experience records." });
+      setItems([]);
     } finally {
       setLoading(false);
     }

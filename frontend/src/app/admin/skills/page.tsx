@@ -21,10 +21,14 @@ export default function AdminSkillsPage() {
         adminApi.getSkillCategories(),
         adminApi.getSkills(),
       ]);
-      setCategories(catsRes.data);
-      setSkills(skillsRes.data);
+      const catItems = (catsRes as any)?.results || (catsRes as any)?.data || (Array.isArray(catsRes) ? catsRes : []);
+      const skillItems = (skillsRes as any)?.results || (skillsRes as any)?.data || (Array.isArray(skillsRes) ? skillsRes : []);
+      setCategories(Array.isArray(catItems) ? catItems : []);
+      setSkills(Array.isArray(skillItems) ? skillItems : []);
     } catch {
       setMessage({ type: "error", text: "Failed to load skills." });
+      setCategories([]);
+      setSkills([]);
     } finally {
       setLoading(false);
     }

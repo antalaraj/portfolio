@@ -25,7 +25,12 @@ from apps.seo.views import PublicSEOView, AdminSEOMetadataViewSet
 from apps.analytics.views import PublicAnalyticsEventView, AdminAnalyticsOverviewView
 from apps.ai_assistant.views import AIAssistantStatusView
 
-admin_router = DefaultRouter()
+class OptionalSlashRouter(DefaultRouter):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.trailing_slash = '/?'
+
+admin_router = OptionalSlashRouter()
 admin_router.register(r'pages', AdminPageViewSet, basename='admin-pages')
 admin_router.register(r'sections', AdminPageSectionViewSet, basename='admin-sections')
 admin_router.register(r'projects', AdminProjectViewSet, basename='admin-projects')
@@ -83,6 +88,7 @@ urlpatterns = [
     path('api/v1/admin/pages/reorder-sections/', AdminReorderSectionsView.as_view(), name='admin-reorder-sections'),
     path('api/v1/admin/pages/reorder-sections', AdminReorderSectionsView.as_view()),
     path('api/v1/admin/', include(admin_router.urls)),
+    path('api/v1/admin', include(admin_router.urls)),
 ]
 
 if settings.DEBUG:

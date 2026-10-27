@@ -16,10 +16,13 @@ export default function AdminSEOPage() {
     setLoading(true);
     try {
       const res = await adminApi.getSEOMetadata();
-      setSeoList(res.data);
-      if (res.data.length > 0) setSelectedSeo(res.data[0]);
+      const records = (res as any)?.results || (res as any)?.data || (Array.isArray(res) ? res : []);
+      const items = Array.isArray(records) ? records : [];
+      setSeoList(items);
+      if (items.length > 0) setSelectedSeo(items[0]);
     } catch {
       setMessage({ type: "error", text: "Failed to load SEO metadata." });
+      setSeoList([]);
     } finally {
       setLoading(false);
     }
