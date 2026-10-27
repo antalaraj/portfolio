@@ -48,6 +48,7 @@ urlpatterns = [
 
     # Authentication Endpoints
     path('api/v1/auth/', include('apps.accounts.urls')),
+    path('api/v1/auth', include('apps.accounts.urls')),
 
     # Public APIs (Read-only published data + contact submission + silent analytics)
     path('api/v1/public/profile/', PublicProfileView.as_view(), name='public-profile'),
@@ -70,11 +71,17 @@ urlpatterns = [
 
     # Admin Protected Endpoints
     path('api/v1/admin/profile/', AdminProfileView.as_view(), name='admin-profile'),
+    path('api/v1/admin/profile', AdminProfileView.as_view()),
     path('api/v1/admin/settings/', AdminSiteSettingView.as_view(), name='admin-settings'),
+    path('api/v1/admin/settings', AdminSiteSettingView.as_view()),
     path('api/v1/admin/footer/', AdminFooterView.as_view(), name='admin-footer'),
+    path('api/v1/admin/footer', AdminFooterView.as_view()),
     path('api/v1/admin/analytics/overview/', AdminAnalyticsOverviewView.as_view(), name='admin-analytics-overview'),
+    path('api/v1/admin/analytics/overview', AdminAnalyticsOverviewView.as_view()),
     path('api/v1/admin/media/upload/', AdminMediaUploadView.as_view(), name='admin-media-upload'),
+    path('api/v1/admin/media/upload', AdminMediaUploadView.as_view()),
     path('api/v1/admin/pages/reorder-sections/', AdminReorderSectionsView.as_view(), name='admin-reorder-sections'),
+    path('api/v1/admin/pages/reorder-sections', AdminReorderSectionsView.as_view()),
     path('api/v1/admin/', include(admin_router.urls)),
 ]
 
