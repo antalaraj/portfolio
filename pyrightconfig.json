@@ -1,0 +1,18 @@
+{
+  "include": [
+    "backend"
+  ],
+  "extraPaths": [
+    "backend"
+  ],
+  "venvPath": "backend",
+  "venv": "venv",
+  "typeCheckingMode": "off",
+  "reportAttributeAccessIssue": "none",
+  "reportIncompatibleVariableOverride": "none",
+  "reportIncompatibleMethodOverride": "none",
+  "reportAssignmentType": "none",
+  "reportArgumentType": "none",
+  "reportGeneralTypeIssues": "none",
+  "reportOptionalMemberAccess": "none"
+}

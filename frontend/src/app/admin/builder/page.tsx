@@ -14,6 +14,7 @@ import {
   RefreshCw,
   Edit2,
   ExternalLink,
+  Sparkles,
 } from "lucide-react";
 import { adminApi } from "@/services/adminApi";
 import { PageSection } from "@/types";
@@ -109,6 +110,7 @@ export default function WebsiteBuilderPage() {
       await adminApi.updateSection(editingSection.id, {
         title: editingSection.title,
         subtitle: editingSection.subtitle,
+        config_data: editingSection.config_data,
       });
       setSections(
         sections.map((s) => (s.id === editingSection.id ? editingSection : s))
@@ -319,6 +321,110 @@ export default function WebsiteBuilderPage() {
                 className="w-full px-3 py-2 text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600"
               />
             </div>
+
+            {/* Hero Section Specific: Experience Badge */}
+            {editingSection.section_type === "hero" && (
+              <div className="p-4 rounded-xl border border-gray-200 bg-slate-50/70 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-bold text-gray-900 text-xs flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+                      Experience Highlight Badge on Photo
+                    </h4>
+                    <p className="text-[11px] text-slate-500 mt-0.5">
+                      Floating badge on the hero profile portrait
+                    </p>
+                  </div>
+
+                  <label className="relative inline-flex items-center cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={editingSection.config_data?.show_experience_badge ?? true}
+                      onChange={(e) =>
+                        setEditingSection({
+                          ...editingSection,
+                          config_data: {
+                            ...(editingSection.config_data || {}),
+                            show_experience_badge: e.target.checked,
+                          },
+                        })
+                      }
+                      className="sr-only peer"
+                    />
+                    <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+                    <span className="ml-2 text-[11px] font-semibold text-gray-700">
+                      {editingSection.config_data?.show_experience_badge ?? true ? "Visible" : "Hidden"}
+                    </span>
+                  </label>
+                </div>
+
+                {(editingSection.config_data?.show_experience_badge ?? true) && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-gray-200/60">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Badge Title
+                      </label>
+                      <input
+                        type="text"
+                        value={editingSection.config_data?.experience_badge_title ?? "3+ Years Experience"}
+                        onChange={(e) =>
+                          setEditingSection({
+                            ...editingSection,
+                            config_data: {
+                              ...(editingSection.config_data || {}),
+                              experience_badge_title: e.target.value,
+                            },
+                          })
+                        }
+                        placeholder="e.g. 3+ Years Experience"
+                        className="w-full px-3 py-1.5 text-xs rounded-md border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                        Badge Subtitle
+                      </label>
+                      <input
+                        type="text"
+                        value={editingSection.config_data?.experience_badge_subtitle ?? "AI / ML Production Systems"}
+                        onChange={(e) =>
+                          setEditingSection({
+                            ...editingSection,
+                            config_data: {
+                              ...(editingSection.config_data || {}),
+                              experience_badge_subtitle: e.target.value,
+                            },
+                          })
+                        }
+                        placeholder="e.g. AI / ML Production Systems"
+                        className="w-full px-3 py-1.5 text-xs rounded-md border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600"
+                      />
+                    </div>
+
+                    {/* Live Preview Pill */}
+                    <div className="sm:col-span-2 pt-1">
+                      <div className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">
+                        Live Preview
+                      </div>
+                      <div className="inline-flex items-center gap-2.5 bg-white rounded-lg border border-gray-200 p-2 shadow-2xs">
+                        <div className="w-7 h-7 rounded bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                          <Sparkles className="w-3.5 h-3.5" />
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-gray-900">
+                            {editingSection.config_data?.experience_badge_title || "3+ Years Experience"}
+                          </div>
+                          <div className="text-[10px] text-slate-500">
+                            {editingSection.config_data?.experience_badge_subtitle || "AI / ML Production Systems"}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
 
             <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
               <button

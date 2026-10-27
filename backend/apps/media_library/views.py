@@ -104,4 +104,11 @@ class AdminMediaAssetViewSet(viewsets.ModelViewSet):
                 cloudinary.uploader.destroy(asset.public_id)
             except Exception:
                 pass
+        elif asset.public_id and asset.public_id.startswith('uploads/'):
+            try:
+                if default_storage.exists(asset.public_id):
+                    default_storage.delete(asset.public_id)
+            except Exception:
+                pass
         return super().destroy(request, *args, **kwargs)
+

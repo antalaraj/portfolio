@@ -28,6 +28,9 @@ export interface Profile {
   availability_status: string;
   avatar_url: string;
   resume_file_url: string;
+  experience_badge_title?: string;
+  experience_badge_subtitle?: string;
+  show_experience_badge?: boolean;
 }
 
 export interface PageSection {

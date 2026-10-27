@@ -10,9 +10,12 @@ class PublicPageView(views.APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, slug):
-        try:
-            page = Page.objects.prefetch_related('sections').get(slug=slug, status=PublishableStatus.PUBLISHED)
-        except Page.DoesNotExist:
+        page = Page.objects.prefetch_related('sections').filter(
+            slug=slug, 
+            status=PublishableStatus.PUBLISHED
+        ).first()
+
+        if not page:
             return Response({
                 'success': False,
                 'error': {
@@ -51,6 +54,7 @@ class AdminPageSectionViewSet(viewsets.ModelViewSet):
     permission_classes = [IsSuperAdminUser]
     queryset = PageSection.objects.all().order_by('display_order')
     serializer_class = PageSectionSerializer
+    pagination_class = None
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -62,19 +66,56 @@ class AdminPageSectionViewSet(viewsets.ModelViewSet):
             qs = qs.filter(page__slug=page_slug)
         return qs
 
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({
+            'success': True,
+            'data': serializer.data
+        })
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response({
+            'success': True,
+            'data': serializer.data
+        })
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response({
+            'success': True,
+            'message': 'Section updated successfully.',
+            'data': serializer.data
+        })
+
 class AdminReorderSectionsView(views.APIView):
     permission_classes = [IsSuperAdminUser]
 
     def post(self, request):
         """
         Accepts: { "order": [ { "id": "uuid", "display_order": 0 }, ... ] }
+        or direct list: [ { "id": "uuid", "display_order": 0 }, ... ]
         """
-        order_data = request.data.get('order', [])
+        if isinstance(request.data, list):
+            order_data = request.data
+        elif isinstance(request.data, dict):
+            order_data = request.data.get('order', [])
+        else:
+            order_data = []
+
         for item in order_data:
-            section_id = item.get('id')
-            new_order = item.get('display_order')
-            if section_id and new_order is not None:
-                PageSection.objects.filter(id=section_id).update(display_order=new_order)
+            if isinstance(item, dict):
+                section_id = item.get('id')
+                new_order = item.get('display_order')
+                if section_id and new_order is not None:
+                    PageSection.objects.filter(id=section_id).update(display_order=new_order)
+
         return Response({
             'success': True,
             'message': 'Section order updated successfully.'

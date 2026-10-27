@@ -8,6 +8,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             'id', 'full_name', 'headline', 'bio', 'email', 'phone',
             'location', 'github_url', 'linkedin_url', 'twitter_url',
             'availability_status', 'avatar_url', 'resume_file_url',
+            'experience_badge_title', 'experience_badge_subtitle', 'show_experience_badge',
             'created_at', 'updated_at'
         ]
         read_only_fields = ['id', 'created_at', 'updated_at']
