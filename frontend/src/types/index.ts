@@ -174,6 +174,9 @@ export interface FooterSetting {
   copyright_text: string;
   is_visible: boolean;
   social_links: SocialLink[];
+  contact_email?: string;
+  github_url?: string;
+  linkedin_url?: string;
 }
 
 export interface SiteSetting {

@@ -171,7 +171,7 @@ export default async function HomePage() {
         />
       </main>
 
-      <Footer setting={footerSetting} navItems={navigationItems} />
+      <Footer setting={footerSetting} navItems={navigationItems} profile={profile} />
     </div>
   );
 }

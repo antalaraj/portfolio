@@ -177,9 +177,20 @@ export default function AdminProfilePage() {
           </div>
         </div>
 
+        {/* Contact and Social Networks Sync Callout */}
+        <div className="p-3.5 rounded-lg border border-blue-200 bg-blue-50/60 flex items-start gap-2.5 text-xs text-blue-900">
+          <Sparkles className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+          <div>
+            <span className="font-semibold">Site-Wide Sync:</span> Contact Email, GitHub Profile URL, and LinkedIn Profile URL configured here automatically control both the <span className="font-semibold underline">Public Footer</span>, Hero section, and Contact Form.
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <label className="block font-semibold text-gray-800 mb-1">Contact Email</label>
+            <label className="block font-semibold text-gray-800 mb-1 flex items-center justify-between">
+              <span>Contact Email</span>
+              <span className="text-[10px] text-blue-600 font-medium">Controls Footer</span>
+            </label>
             <input
               type="email"
               required
@@ -187,6 +198,7 @@ export default function AdminProfilePage() {
               onChange={(e) => setProfile({ ...profile, email: e.target.value })}
               className="w-full px-3 py-2 text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600"
             />
+            <p className="text-[11px] text-slate-500 mt-1">Direct contact email used in Footer and Contact section.</p>
           </div>
           <div>
             <label className="block font-semibold text-gray-800 mb-1">Phone Number</label>
@@ -210,22 +222,32 @@ export default function AdminProfilePage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block font-semibold text-gray-800 mb-1">GitHub Profile URL</label>
+            <label className="block font-semibold text-gray-800 mb-1 flex items-center justify-between">
+              <span>GitHub Profile URL</span>
+              <span className="text-[10px] text-blue-600 font-medium">Controls Footer & Hero</span>
+            </label>
             <input
               type="url"
               value={profile.github_url || ""}
               onChange={(e) => setProfile({ ...profile, github_url: e.target.value })}
               className="w-full px-3 py-2 text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600"
+              placeholder="https://github.com/username"
             />
+            <p className="text-[11px] text-slate-500 mt-1">Synchronized to the Footer GitHub button and Hero profile links.</p>
           </div>
           <div>
-            <label className="block font-semibold text-gray-800 mb-1">LinkedIn Profile URL</label>
+            <label className="block font-semibold text-gray-800 mb-1 flex items-center justify-between">
+              <span>LinkedIn Profile URL</span>
+              <span className="text-[10px] text-blue-600 font-medium">Controls Footer & Hero</span>
+            </label>
             <input
               type="url"
               value={profile.linkedin_url || ""}
               onChange={(e) => setProfile({ ...profile, linkedin_url: e.target.value })}
               className="w-full px-3 py-2 text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600"
+              placeholder="https://linkedin.com/in/username"
             />
+            <p className="text-[11px] text-slate-500 mt-1">Synchronized to the Footer LinkedIn button and Hero profile links.</p>
           </div>
         </div>
 

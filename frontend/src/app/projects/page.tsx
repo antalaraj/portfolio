@@ -63,7 +63,7 @@ export default async function ProjectsPage() {
         )}
       </main>
 
-      <Footer setting={footerSetting} navItems={navItems} />
+      <Footer setting={footerSetting} navItems={navItems} profile={profile} />
     </div>
   );
 }
