@@ -1055,7 +1055,9 @@ class Command(BaseCommand):
                     ("Vercel", "Cloud"),
                     ("Streamlit", "LayoutDashboard")
                 ]
-            )
+            ),
+        ]
+
         # Remove legacy / obsolete mock categories if present
         SkillCategory.objects.filter(slug__in=["ml-dl", "gen-ai", "backend-db", "devops"]).delete()
 
