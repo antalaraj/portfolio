@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Menu, X, ArrowUpRight, FileText } from "lucide-react";
 import { NavigationItem } from "@/types";
+import { resolveMediaUrl } from "@/lib/utils";
 
 interface NavbarProps {
   items?: NavigationItem[];
@@ -46,11 +47,12 @@ export function Navbar({ items = [], resumeUrl = "/resume", avatarUrl }: NavbarP
           {avatarUrl ? (
             <div className="w-8 h-8 rounded-full overflow-hidden border border-gray-200 shadow-2xs shrink-0 relative">
               <Image
-                src={avatarUrl}
+                src={resolveMediaUrl(avatarUrl)}
                 alt="Raj Antala"
                 fill
                 sizes="96px"
                 quality={95}
+                unoptimized
                 className="object-cover object-[center_15%]"
                 priority
               />

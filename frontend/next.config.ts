@@ -6,6 +6,9 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "res.cloudinary.com" },
       { protocol: "https", hostname: "via.placeholder.com" },
+      // Render production backend media
+      { protocol: "https", hostname: "*.onrender.com" },
+      { protocol: "https", hostname: "raj-portfolio-backend.onrender.com" },
       // Local Django backend media (development)
       { protocol: "http", hostname: "127.0.0.1", port: "8000" },
       { protocol: "http", hostname: "localhost", port: "8000" },

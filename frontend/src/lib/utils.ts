@@ -14,3 +14,9 @@ export function formatDate(dateString: string | null | undefined): string {
     return dateString
   }
 }
+
+export function resolveMediaUrl(url?: string): string {
+  if (!url) return "";
+  // Convert full backend URLs (localhost or *.onrender.com) to same-origin /media/ path
+  return url.replace(/^https?:\/\/(127\.0\.0\.1|localhost|.*\.onrender\.com)(:\d+)?(\/media\/.*)$/, "$3");
+}

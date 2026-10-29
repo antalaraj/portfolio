@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Mail, FileText, Sparkles, Maximize2, X } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/Icons";
 import { Profile } from "@/types";
+import { resolveMediaUrl } from "@/lib/utils";
 
 interface HeroSectionProps {
   profile: Profile;
@@ -139,12 +140,13 @@ export function HeroSection({ profile, config = {} }: HeroSectionProps) {
                   {profile.avatar_url ? (
                     <>
                       <Image
-                        src={profile.avatar_url}
+                        src={resolveMediaUrl(profile.avatar_url)}
                         alt={`${profile.full_name} – AI Engineer & Data Scientist`}
                         fill
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 880px"
                         quality={95}
                         priority
+                        unoptimized
                         className="object-cover object-[center_20%] transition-transform duration-700 ease-out group-hover:scale-105 cursor-pointer"
                         onClick={() => setShowLightbox(true)}
                         title="Click to view full-resolution photo"
@@ -226,11 +228,12 @@ export function HeroSection({ profile, config = {} }: HeroSectionProps) {
           >
             <div className="relative w-[min(90vw,800px)] h-[min(85vh,960px)]">
               <Image
-                src={profile.avatar_url}
+                src={resolveMediaUrl(profile.avatar_url)}
                 alt={profile.full_name}
                 fill
                 sizes="100vw"
                 quality={100}
+                unoptimized
                 className="object-contain rounded-xl shadow-2xl"
                 priority
               />
