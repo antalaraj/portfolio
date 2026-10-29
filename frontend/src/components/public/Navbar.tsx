@@ -83,7 +83,7 @@ export function Navbar({ items = [], resumeUrl = "/resume", avatarUrl }: NavbarP
         {/* Desktop CTA */}
         <div className="hidden md:flex items-center gap-3">
           <Link
-            href={resumeUrl}
+            href="/resume"
             className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold rounded-md border border-gray-300 text-gray-800 bg-white hover:bg-slate-50 hover:border-gray-400 transition-all shadow-2xs"
           >
             <FileText className="w-3.5 h-3.5 text-blue-600" />
@@ -126,7 +126,7 @@ export function Navbar({ items = [], resumeUrl = "/resume", avatarUrl }: NavbarP
             ))}
             <div className="pt-3 border-t border-gray-100 flex flex-col gap-2">
               <Link
-                href={resumeUrl}
+                href="/resume"
                 onClick={() => setIsOpen(false)}
                 className="w-full text-center py-2 text-sm font-medium rounded-md border border-gray-300 text-gray-800 bg-white hover:bg-slate-50"
               >

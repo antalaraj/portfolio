@@ -20,7 +20,7 @@ export default async function ProjectsPage() {
 
   return (
     <div className="min-h-screen bg-white text-gray-900 flex flex-col">
-      <Navbar items={navItems} resumeUrl={profile.resume_file_url || "/resume"} avatarUrl={profile.avatar_url} />
+      <Navbar items={navItems} resumeUrl="/resume" avatarUrl={profile.avatar_url} />
 
       <main className="flex-1 pt-32 pb-24 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         {/* Breadcrumb Navigation */}

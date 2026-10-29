@@ -359,27 +359,16 @@ export default function AdminResumePage() {
                     </a>
                   </div>
 
-                  {/* Document Live Preview */}
-                  <div className="rounded-xl border border-gray-200 overflow-hidden bg-slate-100 shadow-inner">
-                    <div className="bg-slate-200/80 px-3 py-1.5 text-[11px] font-medium text-slate-700 flex items-center justify-between border-b border-gray-300/80">
-                      <span>Live Embedded Document Preview</span>
-                      <a
-                        href={resolveMediaUrl(profile.resume_file_url)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:underline"
-                      >
-                        Fullscreen View &rarr;
-                      </a>
-                    </div>
+                  {/* Bezel-Less White-Border Live Preview */}
+                  <div className="rounded-xl overflow-hidden shadow-xl ring-1 ring-slate-200 bg-white border-4 border-white">
                     <object
-                      data={`${resolveMediaUrl(profile.resume_file_url)}#toolbar=0&navpanes=0`}
+                      data={`${resolveMediaUrl(profile.resume_file_url)}#toolbar=0&navpanes=0&scrollbar=1&view=FitH`}
                       type="application/pdf"
-                      className="w-full h-[540px] border-0 bg-white"
+                      className="w-full h-[580px] border-0 bg-white"
                     >
                       <iframe
-                        src={`${resolveMediaUrl(profile.resume_file_url)}#toolbar=0&navpanes=0`}
-                        className="w-full h-[540px] border-0 bg-white"
+                        src={`${resolveMediaUrl(profile.resume_file_url)}#toolbar=0&navpanes=0&scrollbar=1&view=FitH`}
+                        className="w-full h-[580px] border-0 bg-white"
                         title="Current Resume Preview"
                       />
                     </object>
