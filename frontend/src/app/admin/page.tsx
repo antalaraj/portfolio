@@ -65,8 +65,8 @@ export default function AdminDashboardPage() {
     {
       label: "Total Page Views",
       value: (metrics?.total_views ?? 0).toLocaleString(),
-      sub: metrics?.today_views !== undefined ? `${metrics.today_views} logged today` : undefined,
-      growth: viewsGrowth,
+      sub: (metrics?.total_views ?? 0) > 0 ? `${metrics?.today_views ?? 0} logged today` : "No visits recorded yet",
+      growth: (metrics?.total_views ?? 0) > 0 ? viewsGrowth : undefined,
       icon: Eye,
       color: "text-blue-600",
       bg: "bg-blue-50",
@@ -74,8 +74,8 @@ export default function AdminDashboardPage() {
     {
       label: "Unique Visitors",
       value: (metrics?.unique_visitors ?? 0).toLocaleString(),
-      sub: metrics?.monthly_views !== undefined ? `${metrics.monthly_views} in last 30d` : undefined,
-      growth: visitorsGrowth,
+      sub: (metrics?.unique_visitors ?? 0) > 0 ? `${metrics?.monthly_views ?? 0} in last 30d` : "Awaiting first visitor",
+      growth: (metrics?.unique_visitors ?? 0) > 0 ? visitorsGrowth : undefined,
       icon: Users,
       color: "text-indigo-600",
       bg: "bg-indigo-50",
@@ -83,7 +83,7 @@ export default function AdminDashboardPage() {
     {
       label: "Resume Downloads",
       value: (metrics?.resume_downloads ?? 0).toLocaleString(),
-      sub: "High-intent recruiter downloads",
+      sub: (metrics?.resume_downloads ?? 0) > 0 ? "High-intent recruiter downloads" : "0 downloads logged",
       icon: FileDown,
       color: "text-emerald-600",
       bg: "bg-emerald-50",
@@ -362,7 +362,14 @@ export default function AdminDashboardPage() {
                 </span>
               </div>
             ))}
+
+            {(!data?.top_referrers || data.top_referrers.length === 0) && (
+              <div className="text-center py-6 text-xs text-slate-400">
+                No external traffic channels recorded yet. Sources (GitHub, LinkedIn, Search) will populate here.
+              </div>
+            )}
           </div>
+
 
           {/* Device Type Breakdown */}
           <div className="mt-6 pt-5 border-t border-gray-100">
