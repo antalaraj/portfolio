@@ -11,7 +11,8 @@ class Experience(PublishableModel):
             ('internship', 'Internship'),
             ('part-time', 'Part-time'),
             ('contract', 'Contract'),
-            ('research', 'Research Fellow')
+            ('research', 'Research Fellow'),
+            ('freelance', 'Freelance')
         ],
         default='internship'
     )

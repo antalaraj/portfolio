@@ -8,6 +8,15 @@ interface ExperienceTimelineProps {
   subtitle?: string;
 }
 
+const EMPLOYMENT_TYPE_MAP: Record<string, string> = {
+  "internship": "Internship",
+  "full-time": "Full-time",
+  "part-time": "Part-time",
+  "contract": "Contract",
+  "research": "Research Fellow",
+  "freelance": "Freelance",
+};
+
 export function ExperienceTimeline({
   items,
   title = "Work Experience & Internships",
@@ -34,6 +43,10 @@ export function ExperienceTimeline({
             const dateStr = `${formatDate(exp.start_date)} — ${
               exp.is_current ? "Present" : formatDate(exp.end_date)
             }`;
+
+            const typeLabel =
+              EMPLOYMENT_TYPE_MAP[exp.employment_type?.toLowerCase()] ||
+              exp.employment_type;
 
             return (
               <div key={exp.id} className="relative group">
@@ -64,9 +77,11 @@ export function ExperienceTimeline({
                           {exp.location}
                         </span>
                       )}
-                      <span className="px-2 py-0.5 rounded text-[11px] font-medium uppercase bg-slate-100 text-slate-700">
-                        {exp.employment_type}
-                      </span>
+                      {typeLabel && (
+                        <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-200/60">
+                          {typeLabel}
+                        </span>
+                      )}
                     </div>
                   </div>
 

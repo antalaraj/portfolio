@@ -5,6 +5,15 @@ import { Briefcase, Plus, Trash2, Edit2, Loader2, CheckCircle2, AlertCircle } fr
 import { adminApi } from "@/services/adminApi";
 import { Experience } from "@/types";
 
+const EMPLOYMENT_TYPES = [
+  { value: "internship", label: "Internship" },
+  { value: "full-time", label: "Full-time" },
+  { value: "part-time", label: "Part-time" },
+  { value: "contract", label: "Contract" },
+  { value: "research", label: "Research Fellow" },
+  { value: "freelance", label: "Freelance" },
+];
+
 export default function AdminExperiencePage() {
   const [items, setItems] = useState<Experience[]>([]);
   const [loading, setLoading] = useState(true);
@@ -171,8 +180,8 @@ export default function AdminExperiencePage() {
                       <div className="text-xs text-blue-600 font-medium">{exp.company || ""}</div>
                     </td>
                     <td className="py-3.5 px-4">
-                      <span className="px-2 py-0.5 rounded text-[10px] font-medium uppercase bg-slate-100 text-slate-700">
-                        {exp.employment_type}
+                      <span className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase bg-slate-100 text-slate-700">
+                        {EMPLOYMENT_TYPES.find((t) => t.value === exp.employment_type)?.label || exp.employment_type}
                       </span>
                     </td>
                     <td className="py-3.5 px-4 font-mono text-slate-500 text-[11px]">
@@ -227,6 +236,34 @@ export default function AdminExperiencePage() {
                     required
                     value={editingExp.job_title || ""}
                     onChange={(e) => setEditingExp({ ...editingExp, job_title: e.target.value })}
+                    className="w-full px-3 py-2 text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block font-semibold text-gray-800 mb-1">Employment / Experience Type *</label>
+                  <select
+                    required
+                    value={editingExp.employment_type || "internship"}
+                    onChange={(e) => setEditingExp({ ...editingExp, employment_type: e.target.value })}
+                    className="w-full px-3 py-2 text-sm rounded-md border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600"
+                  >
+                    {EMPLOYMENT_TYPES.map((type) => (
+                      <option key={type.value} value={type.value}>
+                        {type.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-semibold text-gray-800 mb-1">Location / Work Mode</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Ahmedabad, India / Remote"
+                    value={editingExp.location || ""}
+                    onChange={(e) => setEditingExp({ ...editingExp, location: e.target.value })}
                     className="w-full px-3 py-2 text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600"
                   />
                 </div>
