@@ -261,8 +261,8 @@ export const adminApi = {
     if (match) headers["X-CSRFToken"] = match[1];
 
     const baseUrl = typeof window !== "undefined"
-      ? (process.env.NEXT_PUBLIC_API_URL || "/api/v1")
-      : (process.env.INTERNAL_API_URL ? `${process.env.INTERNAL_API_URL}/api/v1` : "http://127.0.0.1:8000/api/v1");
+      ? "/api/v1"
+      : (process.env.INTERNAL_API_URL ? `${process.env.INTERNAL_API_URL.replace(/\/$/, "")}/api/v1` : "http://127.0.0.1:8000/api/v1");
 
     const res = await fetch(`${baseUrl}/admin/media/upload/`, {
       method: "POST",
@@ -270,7 +270,12 @@ export const adminApi = {
       credentials: "include",
       headers,
     });
-    return res.json();
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.error?.message || data.detail || `Upload failed with status ${res.status}`);
+    }
+    return data;
   },
   getMedia: () => fetchApi<ApiResponse<any[]>>("/admin/media/"),
   deleteMedia: (id: string) =>
