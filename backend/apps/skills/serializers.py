@@ -14,7 +14,9 @@ class SkillSerializer(serializers.ModelSerializer):
 
 class SkillCategorySerializer(serializers.ModelSerializer):
     skills = SkillSerializer(many=True, read_only=True)
+    slug = serializers.SlugField(required=False, allow_blank=True)
+    skills_count = serializers.IntegerField(source='skills.count', read_only=True)
 
     class Meta:
         model = SkillCategory
-        fields = ['id', 'name', 'slug', 'display_order', 'skills']
+        fields = ['id', 'name', 'slug', 'display_order', 'skills', 'skills_count']

@@ -98,7 +98,8 @@ export interface SkillCategory {
   name: string;
   slug: string;
   display_order?: number;
-  skills: Skill[];
+  skills?: Skill[];
+  skills_count?: number;
 }
 
 export interface Experience {
