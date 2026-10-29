@@ -3,7 +3,7 @@ import { Navbar } from "@/components/public/Navbar";
 import { Footer } from "@/components/public/Footer";
 import { PdfDocumentViewer } from "@/components/public/PdfDocumentViewer";
 import Link from "next/link";
-import { ArrowLeft, Download, ExternalLink, FileText, Sparkles, ShieldCheck } from "lucide-react";
+import { ArrowLeft, Download, ExternalLink, FileText, Sparkles } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -37,16 +37,11 @@ export default async function ResumePage() {
             <div className="flex items-center gap-2 mb-2">
               <Link
                 href="/"
-                className="inline-flex items-center text-xs font-semibold text-slate-500 hover:text-blue-600 transition-colors mr-1"
+                className="inline-flex items-center text-xs font-semibold text-slate-500 hover:text-blue-600 transition-colors"
               >
                 <ArrowLeft className="w-3.5 h-3.5 mr-1" />
-                Home
+                Back to Home
               </Link>
-              <span className="text-slate-300">•</span>
-              <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 shadow-2xs">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                Verified Curriculum Vitae
-              </span>
             </div>
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-gray-900">
               {profile.full_name}
