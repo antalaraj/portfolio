@@ -38,11 +38,15 @@ export default function AdminNavigationPage() {
     try {
       if (isNew) {
         const res = await adminApi.createNavigation(editingItem);
-        setItems([...items, res.data]);
+        const createdNav = (res as any)?.data || res;
+        if (createdNav && typeof createdNav === "object") {
+          setItems([...items.filter(Boolean), createdNav]);
+        }
         setMessage({ type: "success", text: "Menu item created successfully!" });
       } else {
         const res = await adminApi.updateNavigation(editingItem.id!, editingItem);
-        setItems(items.map((i) => (i.id === editingItem.id ? res.data : i)));
+        const updatedNav = (res as any)?.data || res;
+        setItems(items.filter(Boolean).map((i) => (i.id === editingItem.id ? updatedNav : i)));
         setMessage({ type: "success", text: "Menu item updated successfully!" });
       }
       setEditingItem(null);
@@ -137,16 +141,16 @@ export default function AdminNavigationPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {items.map((item) => (
-                  <tr key={item.id} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="py-3.5 px-4 font-bold text-gray-900">{item.label}</td>
-                    <td className="py-3.5 px-4 font-mono text-slate-500">{item.destination}</td>
+                {items.filter(Boolean).map((item) => (
+                  <tr key={item?.id || Math.random()} className="hover:bg-slate-50/50 transition-colors">
+                    <td className="py-3.5 px-4 font-bold text-gray-900">{item?.label || "Untitled"}</td>
+                    <td className="py-3.5 px-4 font-mono text-slate-500">{item?.destination || ""}</td>
                     <td className="py-3.5 px-4">
                       <span className="px-2 py-0.5 rounded text-[10px] uppercase font-medium bg-slate-100 text-slate-700">
-                        {item.menu_location}
+                        {item?.menu_location || "header"}
                       </span>
                     </td>
-                    <td className="py-3.5 px-4 font-mono">{item.display_order}</td>
+                    <td className="py-3.5 px-4 font-mono">{item?.display_order ?? 0}</td>
                     <td className="py-3.5 px-4 text-right space-x-1">
                       <button
                         onClick={() => {
@@ -158,7 +162,7 @@ export default function AdminNavigationPage() {
                         <Edit2 className="w-4 h-4" />
                       </button>
                       <button
-                        onClick={() => handleDelete(item.id, item.label)}
+                        onClick={() => handleDelete(item?.id || "", item?.label || "")}
                         className="p-1.5 text-slate-600 hover:text-rose-600 hover:bg-rose-50 rounded"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -176,7 +180,7 @@ export default function AdminNavigationPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-xs">
           <div className="bg-white rounded-xl border border-gray-200 shadow-xl max-w-md w-full p-6 space-y-4 text-xs">
             <h3 className="text-base font-bold text-gray-900">
-              {isNew ? "Add Menu Item" : `Edit Item: ${editingItem.label}`}
+              {isNew ? "Add Menu Item" : `Edit Item: ${editingItem.label || "Untitled"}`}
             </h3>
 
             <form onSubmit={handleSave} className="space-y-4">

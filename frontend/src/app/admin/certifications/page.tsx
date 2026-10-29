@@ -38,11 +38,15 @@ export default function AdminCertificationsPage() {
     try {
       if (isNew) {
         const res = await adminApi.createCertification(editingCert);
-        setItems([res.data, ...items]);
+        const createdCert = (res as any)?.data || res;
+        if (createdCert && typeof createdCert === "object") {
+          setItems([createdCert, ...items.filter(Boolean)]);
+        }
         setMessage({ type: "success", text: "Certification created successfully!" });
       } else {
         const res = await adminApi.updateCertification(editingCert.id!, editingCert);
-        setItems(items.map((c) => (c.id === editingCert.id ? res.data : c)));
+        const updatedCert = (res as any)?.data || res;
+        setItems(items.filter(Boolean).map((c) => (c.id === editingCert.id ? updatedCert : c)));
         setMessage({ type: "success", text: "Certification updated successfully!" });
       }
       setEditingCert(null);
@@ -136,13 +140,13 @@ export default function AdminCertificationsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {items.map((cert) => (
-                  <tr key={cert.id} className="hover:bg-slate-50/50 transition-colors">
+                {items.filter(Boolean).map((cert) => (
+                  <tr key={cert.id || Math.random()} className="hover:bg-slate-50/50 transition-colors">
                     <td className="py-3.5 px-4 font-bold text-gray-900">
-                      <div>{cert.title}</div>
-                      <div className="text-xs text-blue-600 font-medium">{cert.issuer}</div>
+                      <div>{cert.title || "Untitled"}</div>
+                      <div className="text-xs text-blue-600 font-medium">{cert.issuer || ""}</div>
                     </td>
-                    <td className="py-3.5 px-4 font-mono text-slate-500 text-[11px]">{cert.issue_date}</td>
+                    <td className="py-3.5 px-4 font-mono text-slate-500 text-[11px]">{cert.issue_date || "-"}</td>
                     <td className="py-3.5 px-4">
                       {cert.credential_url ? (
                         <a
@@ -186,7 +190,7 @@ export default function AdminCertificationsPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-xs">
           <div className="bg-white rounded-xl border border-gray-200 shadow-xl max-w-md w-full p-6 space-y-4 text-xs">
             <h3 className="text-base font-bold text-gray-900">
-              {isNew ? "Add Certification" : `Edit Certification: ${editingCert.title}`}
+              {isNew ? "Add Certification" : `Edit Certification: ${editingCert.title || "Untitled"}`}
             </h3>
 
             <form onSubmit={handleSave} className="space-y-4">

@@ -14,7 +14,7 @@ export default function AdminFooterPage() {
   useEffect(() => {
     adminApi
       .getFooter()
-      .then((res) => setFooter(res.data))
+      .then((res) => setFooter((res as any)?.data || res || {}))
       .catch(() => setMessage({ type: "error", text: "Failed to load footer settings." }))
       .finally(() => setLoading(false));
   }, []);
@@ -25,7 +25,8 @@ export default function AdminFooterPage() {
     setMessage(null);
     try {
       const res = await adminApi.updateFooter(footer);
-      setFooter(res.data);
+      const updated = (res as any)?.data || res;
+      if (updated && typeof updated === "object") setFooter(updated);
       setMessage({ type: "success", text: "Footer configuration updated successfully!" });
     } catch (err: any) {
       setMessage({ type: "error", text: err?.message || "Failed to save footer." });

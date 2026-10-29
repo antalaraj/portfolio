@@ -38,11 +38,15 @@ export default function AdminTestimonialsPage() {
     try {
       if (isNew) {
         const res = await adminApi.createTestimonial(editingTest);
-        setItems([res.data, ...items]);
+        const createdTest = (res as any)?.data || res;
+        if (createdTest && typeof createdTest === "object") {
+          setItems([createdTest, ...items.filter(Boolean)]);
+        }
         setMessage({ type: "success", text: "Testimonial added successfully!" });
       } else {
         const res = await adminApi.updateTestimonial(editingTest.id!, editingTest);
-        setItems(items.map((t) => (t.id === editingTest.id ? res.data : t)));
+        const updatedTest = (res as any)?.data || res;
+        setItems(items.filter(Boolean).map((t) => (t.id === editingTest.id ? updatedTest : t)));
         setMessage({ type: "success", text: "Testimonial updated successfully!" });
       }
       setEditingTest(null);
@@ -136,11 +140,11 @@ export default function AdminTestimonialsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {items.map((test) => (
-                  <tr key={test.id} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="py-3.5 px-4 font-bold text-gray-900">{test.author_name}</td>
+                {items.filter(Boolean).map((test) => (
+                  <tr key={test.id || Math.random()} className="hover:bg-slate-50/50 transition-colors">
+                    <td className="py-3.5 px-4 font-bold text-gray-900">{test.author_name || "Anonymous"}</td>
                     <td className="py-3.5 px-4 text-slate-600">
-                      {test.designation}{test.company ? ` • ${test.company}` : ""}
+                      {test.designation || ""}{test.company ? ` • ${test.company}` : ""}
                     </td>
                     <td className="py-3.5 px-4">
                       {test.is_approved ? (
@@ -182,7 +186,7 @@ export default function AdminTestimonialsPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-xs">
           <div className="bg-white rounded-xl border border-gray-200 shadow-xl max-w-lg w-full p-6 space-y-4 text-xs">
             <h3 className="text-base font-bold text-gray-900">
-              {isNew ? "Add Endorsement" : `Edit Endorsement: ${editingTest.author_name}`}
+              {isNew ? "Add Endorsement" : `Edit Endorsement: ${editingTest.author_name || "Untitled"}`}
             </h3>
 
             <form onSubmit={handleSave} className="space-y-4">

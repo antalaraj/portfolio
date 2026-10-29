@@ -38,11 +38,15 @@ export default function AdminEducationPage() {
     try {
       if (isNew) {
         const res = await adminApi.createEducation(editingEdu);
-        setItems([res.data, ...items]);
+        const createdEdu = (res as any)?.data || res;
+        if (createdEdu && typeof createdEdu === "object") {
+          setItems([createdEdu, ...items.filter(Boolean)]);
+        }
         setMessage({ type: "success", text: "Education added successfully!" });
       } else {
         const res = await adminApi.updateEducation(editingEdu.id!, editingEdu);
-        setItems(items.map((i) => (i.id === editingEdu.id ? res.data : i)));
+        const updatedEdu = (res as any)?.data || res;
+        setItems(items.filter(Boolean).map((i) => (i.id === editingEdu.id ? updatedEdu : i)));
         setMessage({ type: "success", text: "Education updated successfully!" });
       }
       setEditingEdu(null);
@@ -139,11 +143,11 @@ export default function AdminEducationPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {items.map((edu) => (
-                  <tr key={edu.id} className="hover:bg-slate-50/50 transition-colors">
+                {items.filter(Boolean).map((edu) => (
+                  <tr key={edu.id || Math.random()} className="hover:bg-slate-50/50 transition-colors">
                     <td className="py-3.5 px-4 font-bold text-gray-900">
-                      <div>{edu.degree}</div>
-                      <div className="text-[11px] text-slate-400 font-normal">{edu.field_of_study}</div>
+                      <div>{edu.degree || "Untitled Degree"}</div>
+                      <div className="text-[11px] text-slate-400 font-normal">{edu.field_of_study || ""}</div>
                     </td>
                     <td className="py-3.5 px-4 text-slate-600">{edu.institution}</td>
                     <td className="py-3.5 px-4 font-mono text-emerald-600 font-semibold">{edu.grade || "—"}</td>
@@ -176,7 +180,7 @@ export default function AdminEducationPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-xs">
           <div className="bg-white rounded-xl border border-gray-200 shadow-xl max-w-lg w-full p-6 space-y-4 text-xs">
             <h3 className="text-base font-bold text-gray-900">
-              {isNew ? "Add Education" : `Edit Education: ${editingEdu.degree}`}
+              {isNew ? "Add Education" : `Edit Education: ${editingEdu.degree || "Untitled"}`}
             </h3>
 
             <form onSubmit={handleSave} className="space-y-4">

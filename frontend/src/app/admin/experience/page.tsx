@@ -56,11 +56,15 @@ export default function AdminExperiencePage() {
     try {
       if (isNew) {
         const res = await adminApi.createExperience(payload);
-        setItems([res.data, ...items]);
+        const createdExp = (res as any)?.data || res;
+        if (createdExp && typeof createdExp === "object") {
+          setItems([createdExp, ...items.filter(Boolean)]);
+        }
         setMessage({ type: "success", text: "Experience added successfully!" });
       } else {
         const res = await adminApi.updateExperience(editingExp.id!, payload);
-        setItems(items.map((i) => (i.id === editingExp.id ? res.data : i)));
+        const updatedExp = (res as any)?.data || res;
+        setItems(items.filter(Boolean).map((i) => (i.id === editingExp.id ? updatedExp : i)));
         setMessage({ type: "success", text: "Experience updated successfully!" });
       }
       setEditingExp(null);
@@ -160,11 +164,11 @@ export default function AdminExperiencePage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {items.map((exp) => (
-                  <tr key={exp.id} className="hover:bg-slate-50/50 transition-colors">
+                {items.filter(Boolean).map((exp) => (
+                  <tr key={exp.id || Math.random()} className="hover:bg-slate-50/50 transition-colors">
                     <td className="py-3.5 px-4">
-                      <div className="font-bold text-gray-900">{exp.job_title}</div>
-                      <div className="text-xs text-blue-600 font-medium">{exp.company}</div>
+                      <div className="font-bold text-gray-900">{exp.job_title || "Untitled Role"}</div>
+                      <div className="text-xs text-blue-600 font-medium">{exp.company || ""}</div>
                     </td>
                     <td className="py-3.5 px-4">
                       <span className="px-2 py-0.5 rounded text-[10px] font-medium uppercase bg-slate-100 text-slate-700">
@@ -201,7 +205,7 @@ export default function AdminExperiencePage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-xs">
           <div className="bg-white rounded-xl border border-gray-200 shadow-xl max-w-xl w-full p-6 max-h-[90vh] overflow-y-auto space-y-4 text-xs">
             <h3 className="text-base font-bold text-gray-900">
-              {isNew ? "Add Work Experience" : `Edit Experience: ${editingExp.job_title}`}
+              {isNew ? "Add Work Experience" : `Edit Experience: ${editingExp.job_title || "Untitled"}`}
             </h3>
 
             <form onSubmit={handleSave} className="space-y-4">

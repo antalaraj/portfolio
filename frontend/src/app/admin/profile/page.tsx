@@ -15,7 +15,7 @@ export default function AdminProfilePage() {
   useEffect(() => {
     adminApi
       .getProfile()
-      .then((res) => setProfile(res.data))
+      .then((res) => setProfile((res as any)?.data || res || {}))
       .catch(() => setMessage({ type: "error", text: "Failed to load profile." }))
       .finally(() => setLoading(false));
   }, []);
@@ -29,7 +29,7 @@ export default function AdminProfilePage() {
 
     try {
       const res = await adminApi.uploadMedia(file, `${profile.full_name || "Profile"} Avatar`);
-      const url = res.data?.file_url;
+      const url = (res as any)?.data?.file_url || (res as any)?.file_url;
       if (url) {
         setProfile((prev) => ({ ...prev, avatar_url: url }));
         setMessage({
@@ -53,7 +53,8 @@ export default function AdminProfilePage() {
 
     try {
       const res = await adminApi.updateProfile(profile);
-      setProfile(res.data);
+      const updated = (res as any)?.data || res;
+      if (updated && typeof updated === "object") setProfile(updated);
       setMessage({ type: "success", text: "Profile information updated successfully!" });
     } catch (err: any) {
       setMessage({ type: "error", text: err?.message || "Failed to save profile." });

@@ -36,11 +36,12 @@ export default function AdminMediaLibraryPage() {
     setMessage(null);
     try {
       const res = await adminApi.uploadMedia(file);
-      if (res.success) {
-        setAssets([res.data, ...assets]);
+      const newAsset = (res as any)?.data || res;
+      if (newAsset && (newAsset.id || newAsset.file_url)) {
+        setAssets([newAsset, ...(Array.isArray(assets) ? assets.filter(Boolean) : [])]);
         setMessage({ type: "success", text: "Media uploaded and synchronized successfully!" });
       } else {
-        setMessage({ type: "error", text: res.error?.message || "Upload failed." });
+        setMessage({ type: "error", text: (res as any)?.message || (res as any)?.error?.message || "Upload failed." });
       }
     } catch (err: any) {
       setMessage({ type: "error", text: err?.message || "Upload failed." });
@@ -136,17 +137,17 @@ export default function AdminMediaLibraryPage() {
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {assets.map((asset) => (
+          {assets.filter(Boolean).map((asset) => (
             <div
-              key={asset.id}
+              key={asset?.id || Math.random()}
               className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-2xs group flex flex-col justify-between"
             >
               <div className="aspect-square bg-slate-100 overflow-hidden relative border-b border-gray-100 flex items-center justify-center">
-                {asset.file_type === "image" ? (
+                {asset?.file_type === "image" ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={asset.file_url}
-                    alt={asset.title}
+                    src={asset?.file_url}
+                    alt={asset?.title || "Asset"}
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -158,28 +159,28 @@ export default function AdminMediaLibraryPage() {
 
               <div className="p-3">
                 <div className="text-xs font-bold text-gray-900 truncate">
-                  {asset.title}
+                  {asset?.title || "Untitled"}
                 </div>
                 <div className="text-[10px] text-slate-400 font-mono mt-0.5">
-                  {(asset.file_size_bytes / 1024).toFixed(1)} KB
+                  {asset?.file_size_bytes ? (asset.file_size_bytes / 1024).toFixed(1) : "0.0"} KB
                 </div>
 
                 <div className="mt-3 pt-2 border-t border-gray-100 flex items-center justify-between">
                   <button
-                    onClick={() => handleCopyUrl(asset.file_url, asset.id)}
+                    onClick={() => handleCopyUrl(asset?.file_url || "", asset?.id || "")}
                     className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-600 hover:text-blue-600"
                     title="Copy URL"
                   >
-                    {copiedId === asset.id ? (
+                    {copiedId === asset?.id ? (
                       <Check className="w-3.5 h-3.5 text-emerald-600" />
                     ) : (
                       <Copy className="w-3.5 h-3.5" />
                     )}
-                    <span>{copiedId === asset.id ? "Copied" : "Copy URL"}</span>
+                    <span>{copiedId === asset?.id ? "Copied" : "Copy URL"}</span>
                   </button>
 
                   <button
-                    onClick={() => handleDelete(asset.id, asset.title)}
+                    onClick={() => handleDelete(asset?.id || "", asset?.title || "asset")}
                     className="p-1 text-slate-400 hover:text-rose-600"
                     title="Delete Asset"
                   >

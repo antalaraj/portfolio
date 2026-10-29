@@ -14,7 +14,7 @@ export default function AdminSettingsPage() {
   useEffect(() => {
     adminApi
       .getSettings()
-      .then((res) => setSettings(res.data))
+      .then((res) => setSettings((res as any)?.data || res || {}))
       .catch(() => setMessage({ type: "error", text: "Failed to load settings." }))
       .finally(() => setLoading(false));
   }, []);
@@ -25,7 +25,8 @@ export default function AdminSettingsPage() {
     setMessage(null);
     try {
       const res = await adminApi.updateSettings(settings);
-      setSettings(res.data);
+      const updated = (res as any)?.data || res;
+      if (updated && typeof updated === "object") setSettings(updated);
       setMessage({ type: "success", text: "Site settings saved successfully!" });
     } catch (err: any) {
       setMessage({ type: "error", text: err?.message || "Failed to save settings." });

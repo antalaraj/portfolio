@@ -52,12 +52,14 @@ export default function AdminProjectsPage() {
       if (isNew) {
         const res = await adminApi.createProject(editingProject);
         const newProj = (res as any)?.data || res;
-        setProjects([newProj, ...(Array.isArray(projects) ? projects : [])]);
+        if (newProj && typeof newProj === "object") {
+          setProjects([newProj, ...(Array.isArray(projects) ? projects.filter(Boolean) : [])]);
+        }
         setMessage({ type: "success", text: "Project created successfully!" });
       } else {
         const res = await adminApi.updateProject(editingProject.id!, editingProject);
         const updatedProj = (res as any)?.data || res;
-        setProjects((Array.isArray(projects) ? projects : []).map((p) => (p.id === editingProject.id ? updatedProj : p)));
+        setProjects((Array.isArray(projects) ? projects.filter(Boolean) : []).map((p) => (p?.id === editingProject.id ? updatedProj : p)));
         setMessage({ type: "success", text: "Project updated successfully!" });
       }
       setEditingProject(null);
@@ -72,16 +74,16 @@ export default function AdminProjectsPage() {
     if (!confirm(`Are you sure you want to delete "${title}"?`)) return;
     try {
       await adminApi.deleteProject(id);
-      setProjects((Array.isArray(projects) ? projects : []).filter((p) => p.id !== id));
+      setProjects((Array.isArray(projects) ? projects.filter(Boolean) : []).filter((p) => p?.id !== id));
       setMessage({ type: "success", text: `Deleted "${title}".` });
     } catch {
       setMessage({ type: "error", text: "Failed to delete project." });
     }
   };
 
-  const safeProjects = Array.isArray(projects) ? projects : [];
+  const safeProjects = Array.isArray(projects) ? projects.filter(Boolean) : [];
   const filteredProjects = safeProjects.filter((p) =>
-    (p.title || "").toLowerCase().includes(search.toLowerCase())
+    (p?.title || "").toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -176,31 +178,31 @@ export default function AdminProjectsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {filteredProjects.map((p) => (
-                  <tr key={p.id} className="hover:bg-slate-50/50 transition-colors">
+                {filteredProjects.filter(Boolean).map((p) => (
+                  <tr key={p?.id || Math.random()} className="hover:bg-slate-50/50 transition-colors">
                     <td className="py-3.5 px-4">
-                      <div className="font-bold text-gray-900">{p.title}</div>
-                      <div className="text-[11px] text-slate-400 font-mono mt-0.5">/{p.slug}</div>
+                      <div className="font-bold text-gray-900">{p?.title || "Untitled"}</div>
+                      <div className="text-[11px] text-slate-400 font-mono mt-0.5">/{p?.slug || ""}</div>
                     </td>
                     <td className="py-3.5 px-4">
                       <span
                         className={`px-2 py-0.5 rounded text-[10px] font-medium uppercase ${
-                          p.status === "published"
+                          p?.status === "published"
                             ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                             : "bg-amber-50 text-amber-700 border border-amber-200"
                         }`}
                       >
-                        {p.status}
+                        {p?.status || "draft"}
                       </span>
                     </td>
                     <td className="py-3.5 px-4">
-                      {p.is_featured ? (
+                      {p?.is_featured ? (
                         <span className="text-blue-600 font-semibold">Yes</span>
                       ) : (
                         <span className="text-slate-400">No</span>
                       )}
                     </td>
-                    <td className="py-3.5 px-4 font-mono">{p.display_order}</td>
+                    <td className="py-3.5 px-4 font-mono">{p?.display_order ?? 0}</td>
                     <td className="py-3.5 px-4 text-right space-x-1">
                       <button
                         onClick={() => {
@@ -213,7 +215,7 @@ export default function AdminProjectsPage() {
                         <Edit2 className="w-4 h-4" />
                       </button>
                       <button
-                        onClick={() => handleDelete(p.id, p.title)}
+                        onClick={() => handleDelete(p?.id || "", p?.title || "")}
                         className="p-1.5 text-slate-600 hover:text-rose-600 hover:bg-rose-50 rounded"
                         title="Delete Project"
                       >
