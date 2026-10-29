@@ -94,30 +94,30 @@ export default async function HomePage() {
 
         {/* Featured Projects Section */}
         {projects.length > 0 && (
-          <section id="projects" className="py-20 md:py-28 bg-white border-b border-gray-100">
+          <section id="projects" className="py-14 md:py-28 bg-white border-b border-gray-100">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-12 gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 sm:mb-12 gap-4">
                 <div>
                   <span className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-2 block">
                     Portfolio
                   </span>
-                  <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-gray-900">
                     {projectsSection?.title || "Featured Projects"}
                   </h2>
-                  <p className="mt-3 text-slate-600 text-base leading-relaxed max-w-xl">
+                  <p className="mt-3 text-slate-600 text-sm sm:text-base leading-relaxed max-w-xl">
                     {projectsSection?.subtitle || "Selected AI, Machine Learning, and Deep Learning Applications."}
                   </p>
                 </div>
                 <Link
                   href="/projects"
-                  className="inline-flex items-center text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors"
+                  className="inline-flex items-center text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors w-fit"
                 >
                   View All Projects
                   <ArrowRight className="w-4 h-4 ml-1" />
                 </Link>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
                 {projects.slice(0, 6).map((project) => (
                   <ProjectCard key={project.id} project={project} />
                 ))}

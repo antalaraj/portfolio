@@ -22,7 +22,7 @@ export default async function ProjectsPage() {
     <div className="min-h-screen bg-white text-gray-900 flex flex-col">
       <Navbar items={navItems} resumeUrl="/resume" avatarUrl={profile.avatar_url} />
 
-      <main className="flex-1 pt-32 pb-24 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+      <main className="flex-1 pt-24 pb-16 sm:pt-32 sm:pb-24 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         {/* Breadcrumb Navigation */}
         <div className="mb-6">
           <Link
@@ -35,21 +35,21 @@ export default async function ProjectsPage() {
         </div>
 
         {/* Header */}
-        <div className="max-w-3xl mb-12">
+        <div className="max-w-3xl mb-8 sm:mb-12">
           <span className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-2 block">
             Portfolio Archive
           </span>
-          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-gray-900">
             All AI & Engineering Projects
           </h1>
-          <p className="mt-4 text-base text-slate-600 leading-relaxed">
+          <p className="mt-3 sm:mt-4 text-sm sm:text-base text-slate-600 leading-relaxed">
             A comprehensive catalog of autonomous agent architectures, computer vision systems, financial document models, and parameter-efficient LLMs engineered by Raj Antala.
           </p>
         </div>
 
         {/* Projects Grid */}
         {projects.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
             {projects.map((project) => (
               <ProjectCard key={project.id} project={project} />
             ))}

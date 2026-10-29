@@ -17,8 +17,8 @@ export function formatDate(dateString: string | null | undefined): string {
 
 export function resolveMediaUrl(url?: string): string {
   if (!url) return "";
-  // Convert full backend URLs (localhost or *.onrender.com) to same-origin /media/ path
-  let resolved = url.replace(/^https?:\/\/(127\.0\.0\.1|localhost|.*\.onrender\.com)(:\d+)?(\/media\/.*)$/, "$3");
+  // Convert local backend URLs to same-origin /media/ path
+  let resolved = url.replace(/^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?(\/media\/.*)$/, "$3");
 
   // Upgrade Cloudinary URLs to maximum quality delivery if not already transformed
   if (resolved.includes("res.cloudinary.com") && resolved.includes("/upload/") && !resolved.includes("q_auto")) {

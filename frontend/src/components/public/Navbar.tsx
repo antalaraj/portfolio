@@ -111,32 +111,41 @@ export function Navbar({ items = [], resumeUrl = "/resume", avatarUrl }: NavbarP
         </button>
       </div>
 
+      {/* Mobile Drawer Backdrop */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 top-16 bg-black/25 backdrop-blur-2xs z-40 md:hidden animate-in fade-in duration-200"
+          onClick={() => setIsOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
       {/* Mobile Drawer */}
       {isOpen && (
-        <div className="md:hidden bg-white border-b border-gray-200 px-4 pt-3 pb-6 shadow-lg animate-in slide-in-from-top-2 duration-150">
-          <div className="flex flex-col gap-3">
+        <div className="relative z-50 md:hidden bg-white border-b border-gray-200 px-4 pt-3 pb-6 shadow-xl animate-in slide-in-from-top-2 duration-150">
+          <div className="flex flex-col gap-1.5">
             {defaultNav.map((item) => (
               <Link
                 key={item.id}
                 href={item.destination}
                 onClick={() => setIsOpen(false)}
-                className="px-3 py-2 text-sm font-medium text-slate-700 hover:text-blue-600 hover:bg-slate-50 rounded-md transition-colors"
+                className="px-3.5 py-2.5 text-sm font-medium text-slate-700 hover:text-blue-600 hover:bg-slate-50 rounded-lg transition-colors"
               >
                 {item.label}
               </Link>
             ))}
-            <div className="pt-3 border-t border-gray-100 flex flex-col gap-2">
+            <div className="pt-3 mt-2 border-t border-gray-100 flex flex-col gap-2.5">
               <Link
                 href="/resume"
                 onClick={() => setIsOpen(false)}
-                className="w-full text-center py-2 text-sm font-medium rounded-md border border-gray-300 text-gray-800 bg-white hover:bg-slate-50"
+                className="w-full text-center py-2.5 text-sm font-semibold rounded-lg border border-gray-300 text-gray-800 bg-white hover:bg-slate-50 transition-colors"
               >
                 View Resume
               </Link>
               <Link
                 href="/#contact"
                 onClick={() => setIsOpen(false)}
-                className="w-full text-center py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700"
+                className="w-full text-center py-2.5 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors shadow-xs"
               >
                 Get in Touch
               </Link>

@@ -76,7 +76,7 @@ export function SkillsGrid({
       : categories.filter((c) => c.slug === selectedSlug);
 
   return (
-    <section id="skills" className="py-20 md:py-28 bg-white border-b border-gray-100">
+    <section id="skills" className="py-14 md:py-28 bg-white border-b border-gray-100">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="max-w-2xl">
@@ -91,14 +91,14 @@ export function SkillsGrid({
           </p>
         </div>
 
-        {/* Filter Filter Tabs */}
+        {/* Filter Tabs */}
         {categories.length > 1 && (
-          <div className="mt-8 flex flex-wrap gap-2 pb-2">
+          <div className="mt-6 sm:mt-8 flex gap-2 pb-2 overflow-x-auto sm:flex-wrap no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
             <button
               type="button"
               suppressHydrationWarning
               onClick={() => setSelectedSlug("all")}
-              className={`px-3.5 py-1.5 text-xs font-semibold rounded-md transition-all ${
+              className={`px-3.5 py-1.5 text-xs font-semibold rounded-md shrink-0 transition-all ${
                 selectedSlug === "all"
                   ? "bg-blue-600 text-white shadow-2xs"
                   : "bg-slate-50 text-slate-600 hover:bg-slate-100 border border-gray-200"
@@ -112,7 +112,7 @@ export function SkillsGrid({
                 type="button"
                 suppressHydrationWarning
                 onClick={() => setSelectedSlug(cat.slug)}
-                className={`px-3.5 py-1.5 text-xs font-semibold rounded-md transition-all ${
+                className={`px-3.5 py-1.5 text-xs font-semibold rounded-md shrink-0 transition-all ${
                   selectedSlug === cat.slug
                     ? "bg-blue-600 text-white shadow-2xs"
                     : "bg-slate-50 text-slate-600 hover:bg-slate-100 border border-gray-200"
@@ -125,11 +125,11 @@ export function SkillsGrid({
         )}
 
         {/* Categorized Cards Grid */}
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="mt-6 sm:mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
           {filteredCategories.map((category) => (
             <div
               key={category.id}
-              className="bg-white rounded-lg border border-gray-200 p-6 shadow-2xs hover:border-gray-300 transition-all"
+              className="bg-white rounded-lg border border-gray-200 p-5 sm:p-6 shadow-2xs hover:border-gray-300 transition-all"
             >
               <h3 className="text-base font-bold text-gray-900 border-b border-gray-100 pb-3 flex items-center justify-between">
                 <span>{category.name}</span>

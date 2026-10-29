@@ -32,9 +32,9 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
     <div className="min-h-screen bg-white text-gray-900 flex flex-col">
       <Navbar items={navItems} resumeUrl="/resume" avatarUrl={profile.avatar_url} />
 
-      <main className="flex-1 pt-32 pb-24 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+      <main className="flex-1 pt-24 pb-16 sm:pt-32 sm:pb-24 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         {/* Breadcrumb Navigation */}
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <Link
             href="/projects"
             className="inline-flex items-center text-xs font-semibold text-slate-500 hover:text-blue-600 transition-colors"

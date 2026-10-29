@@ -14,25 +14,25 @@ export function CertificationSection({
   subtitle = "Industry-recognized qualifications validating machine learning, deep learning, and cloud skills.",
 }: CertificationSectionProps) {
   return (
-    <section id="certifications" className="py-20 md:py-28 bg-slate-50 border-b border-gray-100">
+    <section id="certifications" className="py-14 md:py-28 bg-slate-50 border-b border-gray-100">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mb-12">
+        <div className="max-w-2xl mb-8 sm:mb-12">
           <span className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-2 block">
             Credentials
           </span>
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-gray-900">
             {title}
           </h2>
-          <p className="mt-3 text-slate-600 text-base leading-relaxed">
+          <p className="mt-3 text-slate-600 text-sm sm:text-base leading-relaxed">
             {subtitle}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
           {items.map((cert) => (
             <div
               key={cert.id}
-              className="bg-white p-6 rounded-lg border border-gray-200 shadow-2xs hover:border-blue-200 hover:shadow-xs transition-all flex flex-col justify-between"
+              className="bg-white p-5 sm:p-6 rounded-lg border border-gray-200 shadow-2xs hover:border-blue-200 hover:shadow-xs transition-all flex flex-col justify-between"
             >
               <div>
                 <div className="w-9 h-9 rounded-md bg-blue-50 text-blue-600 flex items-center justify-center mb-3">

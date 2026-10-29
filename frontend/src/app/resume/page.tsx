@@ -57,12 +57,12 @@ export default async function ResumePage() {
           </div>
 
           {hasResume && (
-            <div className="flex flex-wrap items-center gap-2.5">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full md:w-auto">
               <a
                 href={resolveMediaUrl(profile.resume_file_url)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-4 py-2 text-xs font-semibold rounded-lg bg-white border border-gray-300 text-slate-700 hover:bg-slate-50 hover:text-blue-600 hover:border-gray-400 shadow-2xs transition-all"
+                className="inline-flex items-center justify-center px-4 py-2 text-xs font-semibold rounded-lg bg-white border border-gray-300 text-slate-700 hover:bg-slate-50 hover:text-blue-600 hover:border-gray-400 shadow-2xs transition-all"
               >
                 <ExternalLink className="w-3.5 h-3.5 mr-1.5 text-slate-500" />
                 Open Fullscreen
@@ -73,7 +73,7 @@ export default async function ResumePage() {
                 download={`${(profile.full_name || "Raj_Antala").replace(/\s+/g, "_")}_Resume.pdf`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-5 py-2 text-xs font-bold rounded-lg bg-blue-600 text-white hover:bg-blue-700 shadow-sm shadow-blue-500/25 transition-all"
+                className="inline-flex items-center justify-center px-5 py-2 text-xs font-bold rounded-lg bg-blue-600 text-white hover:bg-blue-700 shadow-sm shadow-blue-500/25 transition-all"
               >
                 <Download className="w-3.5 h-3.5 mr-1.5" />
                 Download PDF Resume

@@ -131,19 +131,19 @@ export function AboutSection({ profile, section, config = {} }: AboutSectionProp
         ];
 
   return (
-    <section id="about" className="py-20 md:py-28 bg-slate-50 border-b border-gray-100">
+    <section id="about" className="py-14 md:py-28 bg-slate-50 border-b border-gray-100">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           {/* Left Column: Bio & Narrative */}
           <div className="lg:col-span-7">
             <span className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-2 block">
               {badge}
             </span>
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 leading-tight">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-gray-900 leading-tight">
               {headline}
             </h2>
 
-            <div className="mt-6 text-slate-600 space-y-4 text-base leading-relaxed">
+            <div className="mt-5 sm:mt-6 text-slate-600 space-y-3.5 sm:space-y-4 text-sm sm:text-base leading-relaxed">
               {p1 && <p>{p1}</p>}
               {p2 && <p>{p2}</p>}
               {p3 && <p>{p3}</p>}
@@ -151,11 +151,11 @@ export function AboutSection({ profile, section, config = {} }: AboutSectionProp
 
             {/* Quick Stat Highlights */}
             {stats.length > 0 && (
-              <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-4 pt-6 border-t border-gray-200">
+              <div className="mt-6 sm:mt-8 grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 pt-5 sm:pt-6 border-t border-gray-200">
                 {stats.map((stat: any, idx: number) => (
                   <div
                     key={idx}
-                    className={`bg-white p-4 rounded-lg border border-gray-200 shadow-2xs ${
+                    className={`bg-white p-3.5 sm:p-4 rounded-lg border border-gray-200 shadow-2xs ${
                       idx === 2 && stats.length === 3 ? "col-span-2 sm:col-span-1" : ""
                     }`}
                   >

@@ -23,7 +23,7 @@ export function ExperienceTimeline({
   subtitle = "Professional journey delivering Machine Learning and Generative AI systems.",
 }: ExperienceTimelineProps) {
   return (
-    <section id="experience" className="py-20 md:py-28 bg-slate-50 border-b border-gray-100">
+    <section id="experience" className="py-14 md:py-28 bg-slate-50 border-b border-gray-100">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mb-12">
           <span className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-2 block">
@@ -38,7 +38,7 @@ export function ExperienceTimeline({
         </div>
 
         {/* Timeline Items */}
-        <div className="relative pl-6 sm:pl-8 border-l border-gray-200 space-y-10">
+        <div className="relative pl-5 sm:pl-8 border-l-2 border-gray-200 space-y-8 sm:space-y-10">
           {items.map((exp) => {
             const dateStr = `${formatDate(exp.start_date)} — ${
               exp.is_current ? "Present" : formatDate(exp.end_date)
@@ -51,14 +51,14 @@ export function ExperienceTimeline({
             return (
               <div key={exp.id} className="relative group">
                 {/* Timeline Node Icon */}
-                <div className="absolute -left-[35px] sm:-left-[41px] top-1 w-6 h-6 rounded-full bg-white border-2 border-blue-600 flex items-center justify-center shadow-xs">
-                  <div className="w-2 h-2 rounded-full bg-blue-600" />
+                <div className="absolute -left-[31px] sm:-left-[45px] top-1.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white border-2 border-blue-600 flex items-center justify-center shadow-xs">
+                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-blue-600" />
                 </div>
 
-                <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-2xs hover:border-gray-300 transition-all">
+                <div className="bg-white p-4 sm:p-6 rounded-lg border border-gray-200 shadow-2xs hover:border-gray-300 transition-all">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-gray-100 pb-3">
                     <div>
-                      <h3 className="text-lg font-bold text-gray-900">
+                      <h3 className="text-base sm:text-lg font-bold text-gray-900 leading-snug">
                         {exp.job_title}
                       </h3>
                       <div className="text-sm font-semibold text-blue-600 mt-0.5">
@@ -66,19 +66,19 @@ export function ExperienceTimeline({
                       </div>
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
-                      <span className="inline-flex items-center gap-1 font-mono">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs text-slate-500">
+                      <span className="inline-flex items-center gap-1 font-mono text-[11px] sm:text-xs">
                         <Calendar className="w-3.5 h-3.5 text-slate-400" />
                         {dateStr}
                       </span>
                       {exp.location && (
-                        <span className="inline-flex items-center gap-1">
+                        <span className="inline-flex items-center gap-1 text-[11px] sm:text-xs">
                           <MapPin className="w-3.5 h-3.5 text-slate-400" />
                           {exp.location}
                         </span>
                       )}
                       {typeLabel && (
-                        <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-200/60">
+                        <span className="px-2 py-0.5 rounded text-[10px] sm:text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-200/60">
                           {typeLabel}
                         </span>
                       )}
