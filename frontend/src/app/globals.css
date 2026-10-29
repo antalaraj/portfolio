@@ -17,8 +17,11 @@
     background-color: #FFFFFF !important;
     color: #111827 !important;
     font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    scroll-behavior: smooth;
     overflow-x: hidden;
+  }
+
+  html[data-scroll-behavior="smooth"] {
+    scroll-behavior: smooth;
   }
 
   ::selection {
