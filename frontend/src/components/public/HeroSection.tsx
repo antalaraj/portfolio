@@ -150,24 +150,33 @@ export function HeroSection({ profile, config = {} }: HeroSectionProps) {
               {config.hero_bio || profile.bio || "Engineering intelligent, reliable AI architectures, multi-agent RAG pipelines, and scalable Machine Learning systems that bridge research and enterprise production."}
             </p>
 
-            {/* Primary & Secondary CTA buttons */}
+            {/* Primary & Secondary CTA buttons + Recruiter Quick Access */}
             <div className="mt-3.5 sm:mt-8 flex flex-wrap items-center gap-2.5 sm:gap-3 justify-center sm:justify-start">
               <div className="flex items-center gap-2.5 w-full sm:w-auto">
                 <Link
                   href={ctaPrimaryLink}
                   className="flex-1 sm:flex-none inline-flex items-center justify-center px-4 sm:px-5 py-2.5 rounded-lg bg-blue-600 text-white font-medium text-sm hover:bg-blue-700 shadow-xs transition-all active:scale-[0.98]"
                 >
-                  <Sparkles className="w-4 h-4 mr-2" />
+                  <Sparkles className="w-4 h-4 mr-2 shrink-0" />
                   {ctaPrimary}
                 </Link>
 
                 <Link
-                  href={ctaSecondaryLink}
-                  className="flex-1 sm:flex-none inline-flex items-center justify-center px-4 sm:px-5 py-2.5 rounded-lg border border-gray-300 bg-white text-gray-800 font-medium text-sm hover:bg-slate-50 hover:border-gray-400 shadow-2xs transition-all active:scale-[0.98]"
+                  href="/resume"
+                  className="flex-1 sm:flex-none inline-flex items-center justify-center px-4 sm:px-5 py-2.5 rounded-lg border border-blue-200 bg-blue-50/90 text-blue-700 font-semibold text-sm hover:bg-blue-100 hover:border-blue-300 shadow-2xs transition-all active:scale-[0.98]"
                 >
-                  <FileText className="w-4 h-4 mr-2 text-slate-600" />
-                  {ctaSecondary}
+                  <FileText className="w-4 h-4 mr-2 text-blue-600 shrink-0" />
+                  View Resume
                 </Link>
+
+                {ctaSecondaryLink !== "/resume" && (
+                  <Link
+                    href={ctaSecondaryLink}
+                    className="hidden lg:inline-flex items-center justify-center px-4 sm:px-5 py-2.5 rounded-lg border border-gray-300 bg-white text-gray-800 font-medium text-sm hover:bg-slate-50 hover:border-gray-400 shadow-2xs transition-all active:scale-[0.98]"
+                  >
+                    {ctaSecondary}
+                  </Link>
+                )}
               </div>
 
               {/* Social links */}

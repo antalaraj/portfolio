@@ -99,16 +99,27 @@ export function Navbar({ items = [], resumeUrl = "/resume", avatarUrl }: NavbarP
           </Link>
         </div>
 
-        {/* Mobile Menu Button */}
-        <button
-          type="button"
-          suppressHydrationWarning
-          onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-slate-100 transition-colors"
-          aria-label="Toggle navigation menu"
-        >
-          {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
+        {/* Mobile Actions: 1-tap Resume + Hamburger Menu */}
+        <div className="flex md:hidden items-center gap-2">
+          <Link
+            href={resumeUrl}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-full border border-blue-200 bg-blue-50/90 text-blue-700 hover:bg-blue-100 hover:border-blue-300 active:scale-95 transition-all shadow-2xs"
+            aria-label="View Resume / CV"
+          >
+            <FileText className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+            <span>Resume</span>
+          </Link>
+
+          <button
+            type="button"
+            suppressHydrationWarning
+            onClick={() => setIsOpen(!isOpen)}
+            className="p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-slate-100 transition-colors"
+            aria-label="Toggle navigation menu"
+          >
+            {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Drawer Backdrop */}
@@ -136,11 +147,12 @@ export function Navbar({ items = [], resumeUrl = "/resume", avatarUrl }: NavbarP
             ))}
             <div className="pt-3 mt-2 border-t border-gray-100 flex flex-col gap-2.5">
               <Link
-                href="/resume"
+                href={resumeUrl}
                 onClick={() => setIsOpen(false)}
-                className="w-full text-center py-2.5 text-sm font-semibold rounded-lg border border-gray-300 text-gray-800 bg-white hover:bg-slate-50 transition-colors"
+                className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-lg border border-blue-200 bg-blue-50/80 text-blue-700 hover:bg-blue-100 transition-colors shadow-2xs"
               >
-                View Resume
+                <FileText className="w-4 h-4 text-blue-600" />
+                View & Download Resume (CV)
               </Link>
               <Link
                 href="/#contact"
