@@ -567,14 +567,12 @@ class Command(BaseCommand):
             "DJANGO_SUPERUSER_PASSWORD"
         )
 
-        if os.getenv("SEED_ADMIN", "false").lower() == "true":
+        should_seed_admin = (
+            os.getenv("SEED_ADMIN", "false").lower() == "true" and
+            bool(admin_password)
+        )
 
-            if not admin_password:
-                raise CommandError(
-                    "Set DJANGO_SUPERUSER_PASSWORD before "
-                    "creating the superuser."
-                )
-
+        if should_seed_admin:
             admin_user, created = User.objects.get_or_create(
                 username=admin_username,
                 defaults={
@@ -586,19 +584,21 @@ class Command(BaseCommand):
                 }
             )
 
-            if created:
-                admin_user.set_password(admin_password)
-                admin_user.save()
+            admin_user.is_staff = True
+            admin_user.is_superuser = True
+            admin_user.set_password(admin_password)
+            admin_user.save()
 
+            if created:
                 self.stdout.write(
                     self.style.SUCCESS(
-                        "[OK] SuperAdmin account created."
+                        f"[OK] SuperAdmin account '{admin_username}' created."
                     )
                 )
             else:
                 self.stdout.write(
-                    self.style.NOTICE(
-                        "[OK] Existing SuperAdmin preserved."
+                    self.style.SUCCESS(
+                        f"[OK] SuperAdmin account '{admin_username}' password synchronized."
                     )
                 )
         else:

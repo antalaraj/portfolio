@@ -1,10 +1,11 @@
 const getApiBaseUrl = () => {
   if (typeof window !== "undefined") {
-    // In browser: use relative URL if not explicitly set, enabling Next.js proxy
-    return process.env.NEXT_PUBLIC_API_URL || "/api/v1";
+    // In browser: always use the same-origin Next.js proxy (/api/v1) for seamless cookies, CSRF, and no CORS issues
+    return "/api/v1";
   }
   // On server (SSR): use internal direct address
-  return process.env.INTERNAL_API_URL ? `${process.env.INTERNAL_API_URL}/api/v1` : "http://127.0.0.1:8000/api/v1";
+  const internal = process.env.INTERNAL_API_URL || "http://127.0.0.1:8000";
+  return `${internal.replace(/\/$/, "")}/api/v1`;
 };
 
 interface RequestOptions extends RequestInit {
