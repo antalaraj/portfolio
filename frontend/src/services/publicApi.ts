@@ -116,14 +116,25 @@ export const publicApi = {
     });
   },
 
-  trackEvent: async (path: string, referrer?: string) => {
+  trackEvent: async (
+    path: string,
+    referrer?: string,
+    eventType: string = "pageview",
+    metadata: Record<string, any> = {}
+  ) => {
     try {
       await fetchApi("/public/analytics/event/", {
         method: "POST",
-        body: JSON.stringify({ path, referrer }),
+        body: JSON.stringify({
+          path,
+          referrer: referrer || (typeof document !== "undefined" ? document.referrer : ""),
+          event_type: eventType,
+          metadata,
+        }),
       });
     } catch {
       // Non-blocking telemetry
     }
   },
 };
+

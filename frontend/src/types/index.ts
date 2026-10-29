@@ -211,16 +211,32 @@ export interface AnalyticsOverview {
     total_views: number;
     unique_visitors: number;
     monthly_views: number;
+    today_views?: number;
+    views_growth_pct?: number;
+    visitors_growth_pct?: number;
     unread_messages: number;
     total_messages: number;
     total_projects: number;
     published_projects: number;
     total_skills: number;
     published_pages: number;
+    resume_downloads?: number;
   };
-  traffic_history: { date: string; views: number }[];
-  popular_paths: { path: string; visits: number }[];
+  traffic_history: { date: string; views: number; visitors?: number }[];
+  popular_paths: { path: string; visits: number; percentage?: number }[];
+  top_referrers?: { name: string; count: number }[];
+  device_breakdown?: { device: string; count: number }[];
+  recent_activity?: {
+    id: number;
+    path: string;
+    event_type: string;
+    referrer: string;
+    device: string;
+    time_ago: string;
+    timestamp: string;
+  }[];
 }
+
 
 export interface User {
   id: string;
