@@ -584,12 +584,11 @@ class Command(BaseCommand):
                 }
             )
 
-            admin_user.is_staff = True
-            admin_user.is_superuser = True
-            admin_user.set_password(admin_password)
-            admin_user.save()
-
             if created:
+                admin_user.is_staff = True
+                admin_user.is_superuser = True
+                admin_user.set_password(admin_password)
+                admin_user.save()
                 self.stdout.write(
                     self.style.SUCCESS(
                         f"[OK] SuperAdmin account '{admin_username}' created."
@@ -598,7 +597,7 @@ class Command(BaseCommand):
             else:
                 self.stdout.write(
                     self.style.SUCCESS(
-                        f"[OK] SuperAdmin account '{admin_username}' password synchronized."
+                        f"[OK] SuperAdmin account '{admin_username}' already exists. Preserving credentials."
                     )
                 )
         else:
@@ -612,17 +611,20 @@ class Command(BaseCommand):
         # 2. PROFILE MANAGEMENT
         # ========================================================
 
-        profile, created = Profile.objects.update_or_create(
-            id="00000000-0000-0000-0000-000000000001",
-            defaults={
-                "full_name": FULL_NAME,
+        # Deployment-safe: Never overwrite an existing profile, profile photos,
+        # resume URLs, or admin-panel modifications.
+        profile = Profile.objects.first()
+        if not profile:
+            profile = Profile.objects.create(
+                id="00000000-0000-0000-0000-000000000001",
+                full_name=FULL_NAME,
 
-                "headline": (
+                headline=(
                     "AI Engineer | Generative AI | "
                     "Machine Learning | Data Science"
                 ),
 
-                "bio": (
+                bio=(
                     "I am Antala Raj, a postgraduate student "
                     "pursuing PGDM in Artificial Intelligence "
                     "and Data Science at Adani Institute of "
@@ -651,41 +653,42 @@ class Command(BaseCommand):
                     "development."
                 ),
 
-                "email": EMAIL,
-                "phone": "",
+                email=EMAIL,
+                phone="",
 
-                "location": "Gujarat, India",
+                location="Gujarat, India",
 
-                "github_url": GITHUB_URL,
-                "linkedin_url": LINKEDIN_URL,
+                github_url=GITHUB_URL,
+                linkedin_url=LINKEDIN_URL,
 
-                "availability_status": (
+                availability_status=(
                     "Open to AI Engineering and Data Science "
                     "Opportunities"
                 ),
 
-                # Actual photo and resume will be added later.
-                "avatar_url": "",
-                "resume_file_url": "",
-
-                # No fabricated experience badge.
-                "experience_badge_title": "",
-                "experience_badge_subtitle": "",
-                "show_experience_badge": False
-            }
-        )
-
-        self.stdout.write(
-            self.style.SUCCESS(
-                "[OK] Personal Profile record created/updated."
+                experience_badge_title="",
+                experience_badge_subtitle="",
+                show_experience_badge=False
             )
-        )
+            self.stdout.write(
+                self.style.SUCCESS(
+                    "[OK] Personal Profile record created with defaults."
+                )
+            )
+        else:
+            self.stdout.write(
+                self.style.SUCCESS(
+                    f"[OK] Existing Personal Profile preserved ('{profile.full_name}'). "
+                    f"Photo: {'Configured' if profile.avatar_url else 'None'}, "
+                    f"Resume: {'Configured' if profile.resume_file_url else 'None'}."
+                )
+            )
 
         # ========================================================
         # 3. DYNAMIC HOMEPAGE & BUILDER SECTIONS
         # ========================================================
 
-        home_page, _ = Page.objects.update_or_create(
+        home_page, _ = Page.objects.get_or_create(
             slug="home",
             defaults={
                 "title": "Home",
@@ -850,6 +853,7 @@ class Command(BaseCommand):
             )
         ]
 
+        sections_created = 0
         for section_type, title, subtitle, order, config in sections_data:
 
             is_active = section_type not in (
@@ -857,21 +861,26 @@ class Command(BaseCommand):
                 SectionType.TESTIMONIALS
             )
 
-            PageSection.objects.update_or_create(
+            section = PageSection.objects.filter(
                 page=home_page,
-                section_type=section_type,
-                defaults={
-                    "title": title,
-                    "subtitle": subtitle,
-                    "display_order": order,
-                    "is_active": is_active,
-                    "config_data": config
-                }
-            )
+                section_type=section_type
+            ).first()
+
+            if not section:
+                PageSection.objects.create(
+                    page=home_page,
+                    section_type=section_type,
+                    title=title,
+                    subtitle=subtitle,
+                    display_order=order,
+                    is_active=is_active,
+                    config_data=config
+                )
+                sections_created += 1
 
         self.stdout.write(
             self.style.SUCCESS(
-                "[OK] Homepage dynamic builder sections updated."
+                f"[OK] Homepage builder sections verified ({sections_created} created, existing preserved)."
             )
         )
 
@@ -880,21 +889,24 @@ class Command(BaseCommand):
         # ========================================================
 
         tag_objs = {}
+        tags_created = 0
 
         for name, category in tech_tags.items():
 
-            tag, _ = TechTag.objects.update_or_create(
+            tag, created = TechTag.objects.get_or_create(
                 name=name,
                 defaults={
                     "category": category
                 }
             )
+            if created:
+                tags_created += 1
 
             tag_objs[name] = tag
 
         self.stdout.write(
             self.style.SUCCESS(
-                "[OK] Technology tags created/updated."
+                f"[OK] Technology tags verified ({tags_created} created, existing preserved)."
             )
         )
 
@@ -902,23 +914,15 @@ class Command(BaseCommand):
         # 5. FEATURED PROJECTS
         # ========================================================
 
-        # Remove fictional projects from the original seed.
-        fake_project_slugs = [
-            "autonomous-multi-agent-rag-system",
-            "financial-document-intelligence",
-            "real-time-defect-detection",
-            "generative-code-assistant-lora"
-        ]
-
-        Project.objects.filter(
-            slug__in=fake_project_slugs
-        ).delete()
+        # Deployment-safe: Never delete projects or overwrite existing project
+        # thumbnails, descriptions, demo links, or custom technology tags.
+        projects_created = 0
 
         for project_data in projects_data:
 
             project_tags = project_data.get("tags", [])
 
-            project, _ = Project.objects.update_or_create(
+            project, created = Project.objects.get_or_create(
                 slug=project_data["slug"],
                 defaults={
                     "title": project_data["title"],
@@ -942,18 +946,19 @@ class Command(BaseCommand):
                 }
             )
 
-            selected_tags = [
-                tag_objs[tag_name]
-                for tag_name in project_tags
-                if tag_name in tag_objs
-            ]
-
-            # Replace old fake project technology relationships.
-            project.technologies.set(selected_tags)
+            if created:
+                projects_created += 1
+                selected_tags = [
+                    tag_objs[tag_name]
+                    for tag_name in project_tags
+                    if tag_name in tag_objs
+                ]
+                # Set initial technologies only on new project creation.
+                project.technologies.set(selected_tags)
 
         self.stdout.write(
             self.style.SUCCESS(
-                "[OK] Actual GitHub projects and technologies seeded."
+                f"[OK] Featured projects verified ({projects_created} new seeded, existing preserved)."
             )
         )
 
@@ -961,9 +966,9 @@ class Command(BaseCommand):
         # 6. SKILL CATEGORIES & SKILLS
         # ========================================================
 
-        # The database requires proficiency from 1 to 100.
-        # The value 1 is only a schema placeholder.
-        # Display skills as technology tags, not fake percentages.
+        # Deployment-safe: Never delete skill categories or overwrite existing
+        # skills, icons, visibility, or proficiency values.
+        skills_created = 0
 
         skills_structure = [
             (
@@ -1058,38 +1063,42 @@ class Command(BaseCommand):
             ),
         ]
 
-        # Remove legacy / obsolete mock categories if present
-        SkillCategory.objects.filter(slug__in=["ml-dl", "gen-ai", "backend-db", "devops"]).delete()
-
         for cat_name, cat_slug, cat_order, skill_list in skills_structure:
 
-            category, _ = SkillCategory.objects.update_or_create(
-                slug=cat_slug,
-                defaults={
-                    "name": cat_name,
-                    "display_order": cat_order
-                }
-            )
+            category = SkillCategory.objects.filter(slug=cat_slug).first()
+            if not category:
+                category = SkillCategory.objects.filter(name=cat_name).first()
+            if not category:
+                category = SkillCategory.objects.create(
+                    slug=cat_slug,
+                    name=cat_name,
+                    display_order=cat_order
+                )
 
             for idx, (skill_name, icon) in enumerate(
                 skill_list,
                 start=1
             ):
 
-                Skill.objects.update_or_create(
+                skill = Skill.objects.filter(
                     category=category,
-                    name=skill_name,
-                    defaults={
-                        "proficiency": 1,
-                        "icon_name": icon,
-                        "display_order": idx,
-                        "is_visible": True
-                    }
-                )
+                    name=skill_name
+                ).first()
+
+                if not skill:
+                    Skill.objects.create(
+                        category=category,
+                        name=skill_name,
+                        proficiency=1,
+                        icon_name=icon,
+                        display_order=idx,
+                        is_visible=True
+                    )
+                    skills_created += 1
 
         self.stdout.write(
             self.style.SUCCESS(
-                "[OK] Skill categories and skills seeded."
+                f"[OK] Skill categories and skills verified ({skills_created} new skills seeded, existing preserved)."
             )
         )
 
@@ -1097,38 +1106,29 @@ class Command(BaseCommand):
         # 7. WORK EXPERIENCE
         # ========================================================
 
-        # Remove fictional experience from the original seed.
-        Experience.objects.filter(
-            company__in=[
-                "NeuralTech Solutions",
-                "Cognitive Systems Research Lab"
-            ]
-        ).delete()
-
-        Experience.objects.update_or_create(
+        # Deployment-safe: Never delete experience records or overwrite
+        # manually updated company info, dates, or responsibilities.
+        existing_exp = Experience.objects.filter(
             company="OpenSpectrum AI Private Limited",
-            job_title="AI Engineer Intern",
-            defaults={
-                "employment_type": "internship",
+            job_title="AI Engineer Intern"
+        ).first()
 
-                "location": "India",
-
-                "start_date": datetime.date(2026, 3, 1),
-
-                # Exact completion date has not been confirmed.
-                "end_date": None,
-
-                # Internship is completed.
-                "is_current": False,
-
-                "description": (
+        if not existing_exp:
+            Experience.objects.create(
+                company="OpenSpectrum AI Private Limited",
+                job_title="AI Engineer Intern",
+                employment_type="internship",
+                location="India",
+                start_date=datetime.date(2026, 3, 1),
+                end_date=None,
+                is_current=False,
+                description=(
                     "Worked as an AI Engineer Intern at "
                     "OpenSpectrum AI Private Limited, contributing "
                     "to Luma Assistant and AI-powered ERP "
                     "functionality."
                 ),
-
-                "responsibilities": [
+                responsibilities=[
                     (
                         "Worked on the design and development "
                         "of Luma Assistant."
@@ -1155,48 +1155,35 @@ class Command(BaseCommand):
                         "and multi-module interactions."
                     )
                 ],
-
-                "status": PublishableStatus.PUBLISHED,
-                "published_at": CURRENT_TIME
-            }
-        )
-
-        self.stdout.write(
-            self.style.SUCCESS(
-                "[OK] OpenSpectrum AI internship record seeded."
+                status=PublishableStatus.PUBLISHED,
+                published_at=CURRENT_TIME
             )
-        )
+            self.stdout.write(
+                self.style.SUCCESS(
+                    "[OK] OpenSpectrum AI internship record seeded."
+                )
+            )
+        else:
+            self.stdout.write(
+                self.style.SUCCESS(
+                    "[OK] Existing OpenSpectrum AI internship record preserved."
+                )
+            )
 
         # ========================================================
         # 8. EDUCATION
         # ========================================================
 
-        # Remove fictional B.Tech education.
-        Education.objects.filter(
-            institution="Gujarat Technological University",
-            degree="Bachelor of Technology (B.Tech)"
-        ).delete()
-
-        # Remove fake education records if present.
-        Education.objects.filter(
-            institution__in=[
-                "Fake University",
-                "Demo Institute"
-            ]
-        ).delete()
-
+        # Deployment-safe: Never delete education records or overwrite
+        # manually updated institution degrees, dates, grades, or descriptions.
         education_data = [
             {
                 "institution": "LJ University",
                 "degree": "Bachelor of Computer Applications (BCA)",
                 "field_of_study": "Computer Applications",
-
-                # Academic-year dates; confirm exact dates.
                 "start_date": datetime.date(2022, 8, 1),
                 "end_date": datetime.date(2025, 5, 31),
-
                 "grade": "",
-
                 "description": (
                     "Completed Bachelor of Computer Applications "
                     "(BCA) from LJ University, Ahmedabad. "
@@ -1210,21 +1197,15 @@ class Command(BaseCommand):
                     "Adani Institute of Digital Technology "
                     "Management (AIDTM)"
                 ),
-
                 "degree": (
                     "Post Graduate Diploma in Management (PGDM)"
                 ),
-
                 "field_of_study": (
                     "Artificial Intelligence & Data Science"
                 ),
-
-                # Confirm exact admission and expected completion.
                 "start_date": datetime.date(2025, 8, 1),
                 "end_date": None,
-
                 "grade": "",
-
                 "description": (
                     "Pursuing postgraduate studies in "
                     "Artificial Intelligence and Data Science, "
@@ -1237,13 +1218,9 @@ class Command(BaseCommand):
                 "institution": "Gangotri School, Gondal",
                 "degree": "Higher Secondary (Class XII)",
                 "field_of_study": "",
-
-                # Approximate academic-year dates.
                 "start_date": datetime.date(2021, 6, 1),
                 "end_date": datetime.date(2022, 3, 31),
-
                 "grade": "",
-
                 "description": (
                     "Completed Higher Secondary education "
                     "in 2022."
@@ -1251,21 +1228,24 @@ class Command(BaseCommand):
             }
         ]
 
+        edu_created = 0
         for education in education_data:
-
-            Education.objects.update_or_create(
+            edu_obj = Education.objects.filter(
                 institution=education["institution"],
-                degree=education["degree"],
-                defaults={
+                degree=education["degree"]
+            ).first()
+
+            if not edu_obj:
+                Education.objects.create(
                     **education,
-                    "status": PublishableStatus.PUBLISHED,
-                    "published_at": CURRENT_TIME
-                }
-            )
+                    status=PublishableStatus.PUBLISHED,
+                    published_at=CURRENT_TIME
+                )
+                edu_created += 1
 
         self.stdout.write(
             self.style.SUCCESS(
-                "[OK] Actual education records seeded."
+                f"[OK] Education records verified ({edu_created} created, existing preserved)."
             )
         )
 
@@ -1273,20 +1253,11 @@ class Command(BaseCommand):
         # 9. CERTIFICATIONS
         # ========================================================
 
-        # Remove fabricated certifications from the old seed.
-        Certification.objects.filter(
-            title__in=[
-                "Deep Learning Specialization",
-                "AWS Certified Machine Learning – Specialty",
-                "TensorFlow Developer Certificate"
-            ]
-        ).delete()
-
-        # No certification is added without a verified certificate.
+        # Deployment-safe: Never delete verified certifications entered by user.
+        cert_count = Certification.objects.count()
         self.stdout.write(
-            self.style.WARNING(
-                "[SKIP] Certifications not seeded. "
-                "Add only verified certificates."
+            self.style.SUCCESS(
+                f"[OK] Certifications verified ({cert_count} existing records preserved)."
             )
         )
 
@@ -1294,23 +1265,11 @@ class Command(BaseCommand):
         # 10. TESTIMONIALS
         # ========================================================
 
-        # Remove fictional testimonials.
-        Testimonial.objects.filter(
-            author_name__in=[
-                "Dr. Sarah Jenkins",
-                "Michael Chen"
-            ]
-        ).delete()
-
-        # No fabricated recommendations.
-        Testimonial.objects.update(
-            is_approved=False
-        )
-
+        # Deployment-safe: Never delete testimonials or unapprove existing records.
+        test_count = Testimonial.objects.count()
         self.stdout.write(
-            self.style.WARNING(
-                "[SKIP] Testimonials disabled until genuine "
-                "recommendations are provided."
+            self.style.SUCCESS(
+                f"[OK] Testimonials verified ({test_count} existing records preserved)."
             )
         )
 
@@ -1330,27 +1289,28 @@ class Command(BaseCommand):
             ("LinkedIn", LINKEDIN_URL, True, "footer", 9)
         ]
 
+        nav_created = 0
         for label, destination, is_external, location, order in nav_items:
-
-            NavigationItem.objects.update_or_create(
+            nav_item = NavigationItem.objects.filter(
                 label=label,
                 destination=destination,
-                menu_location=location,
-                defaults={
-                    "is_external": is_external,
-                    "display_order": order,
-                    "is_active": True
-                }
-            )
+                menu_location=location
+            ).first()
 
-        # Disable old fake navigation items.
-        NavigationItem.objects.filter(
-            label__in=["Certifications", "Resume"]
-        ).update(is_active=False)
+            if not nav_item:
+                NavigationItem.objects.create(
+                    label=label,
+                    destination=destination,
+                    menu_location=location,
+                    is_external=is_external,
+                    display_order=order,
+                    is_active=True
+                )
+                nav_created += 1
 
         self.stdout.write(
             self.style.SUCCESS(
-                "[OK] Navigation menu items seeded."
+                f"[OK] Navigation menu items verified ({nav_created} created, existing preserved)."
             )
         )
 
@@ -1358,25 +1318,23 @@ class Command(BaseCommand):
         # 12. FOOTER SETTINGS
         # ========================================================
 
-        FooterSetting.objects.update_or_create(
-            id="00000000-0000-0000-0000-000000000002",
-            defaults={
-                "description": (
+        footer_setting = FooterSetting.objects.first()
+        if not footer_setting:
+            FooterSetting.objects.create(
+                id="00000000-0000-0000-0000-000000000002",
+                description=(
                     "Antala Raj — AI Engineer and PGDM student "
                     "in Artificial Intelligence and Data Science. "
                     "Interested in Generative AI, Agentic AI, "
                     "Machine Learning, Computer Vision, and "
                     "building practical AI applications."
                 ),
-
-                "copyright_text": (
+                copyright_text=(
                     f"© {datetime.date.today().year} "
                     "Antala Raj. All rights reserved."
                 ),
-
-                "is_visible": True,
-
-                "social_links": [
+                is_visible=True,
+                social_links=[
                     {
                         "platform": "GitHub",
                         "url": GITHUB_URL,
@@ -1393,115 +1351,124 @@ class Command(BaseCommand):
                         "icon": "Mail"
                     }
                 ]
-            }
-        )
-
-        self.stdout.write(
-            self.style.SUCCESS(
-                "[OK] Footer settings seeded."
             )
-        )
+            self.stdout.write(
+                self.style.SUCCESS(
+                    "[OK] Footer settings created."
+                )
+            )
+        else:
+            self.stdout.write(
+                self.style.SUCCESS(
+                    "[OK] Existing Footer settings preserved."
+                )
+            )
 
         # ========================================================
         # 13. SEO METADATA
         # ========================================================
 
-        SEOMetadata.objects.update_or_create(
-            page_identifier="global",
-            defaults={
-                "title": (
+        seo_obj = SEOMetadata.objects.filter(page_identifier="global").first()
+        if not seo_obj:
+            SEOMetadata.objects.create(
+                page_identifier="global",
+                title=(
                     "Antala Raj | AI Engineer | "
                     "Generative AI & Data Science"
                 ),
-
-                "meta_description": (
+                meta_description=(
                     "Explore the portfolio of Antala Raj, "
                     "an AI and Data Science postgraduate student "
                     "with practical experience in AI engineering, "
                     "Generative AI, Machine Learning, and "
                     "software development."
                 ),
-
-                "keywords": (
+                keywords=(
                     "Antala Raj, Raj Antala, AI Engineer, "
                     "Generative AI, Agentic AI, Machine Learning, "
                     "Data Science, Python, LangChain, LangGraph, "
                     "Computer Vision, AI Portfolio"
                 ),
-
-                "canonical_url": "",
-
-                "og_title": (
+                canonical_url="",
+                og_title=(
                     "Antala Raj | AI Engineer & Data Science"
                 ),
-
-                "og_description": (
+                og_description=(
                     "Personal portfolio showcasing practical "
                     "AI applications, Generative AI projects, "
                     "machine learning, and software development."
                 ),
-
-                "og_image_url": "",
-
-                "robots_directive": "index, follow"
-            }
-        )
-
-        self.stdout.write(
-            self.style.SUCCESS(
-                "[OK] SEO metadata seeded."
+                og_image_url="",
+                robots_directive="index, follow"
             )
-        )
+            self.stdout.write(
+                self.style.SUCCESS(
+                    "[OK] SEO metadata created."
+                )
+            )
+        else:
+            self.stdout.write(
+                self.style.SUCCESS(
+                    "[OK] Existing SEO metadata preserved."
+                )
+            )
 
         # ========================================================
         # 14. SITE SETTINGS
         # ========================================================
 
-        SiteSetting.objects.update_or_create(
-            id="00000000-0000-0000-0000-000000000003",
-            defaults={
-                "site_title": (
+        site_setting = SiteSetting.objects.first()
+        if not site_setting:
+            SiteSetting.objects.create(
+                id="00000000-0000-0000-0000-000000000003",
+                site_title=(
                     "Antala Raj | AI Engineer Portfolio"
                 ),
-
-                "primary_email": EMAIL,
-
-                "maintenance_mode": False,
-
-                "analytics_enabled": True,
-
-                # Resume is not available yet.
-                "resume_download_enabled": False
-            }
-        )
-
-        self.stdout.write(
-            self.style.SUCCESS(
-                "[OK] Global Site Settings seeded."
+                primary_email=EMAIL,
+                maintenance_mode=False,
+                analytics_enabled=True,
+                resume_download_enabled=False
             )
-        )
+            self.stdout.write(
+                self.style.SUCCESS(
+                    "[OK] Global Site Settings created."
+                )
+            )
+        else:
+            self.stdout.write(
+                self.style.SUCCESS(
+                    "[OK] Existing Global Site Settings preserved."
+                )
+            )
 
         # ========================================================
         # COMPLETION
         # ========================================================
+
+        current_profile = Profile.objects.first()
+        has_photo = bool(current_profile and current_profile.avatar_url)
+        has_resume = bool(current_profile and current_profile.resume_file_url)
 
         self.stdout.write(
             self.style.SUCCESS(
                 "\n"
                 "====================================================\n"
                 " ANTALA RAJ PORTFOLIO SEEDING COMPLETED SUCCESSFULLY\n"
+                " (DEPLOYMENT-SAFE: ALL EXISTING RECORDS PRESERVED)  \n"
                 "====================================================\n"
                 f"Name: {FULL_NAME}\n"
                 f"Email: {EMAIL}\n"
                 f"GitHub: {GITHUB_URL}\n"
                 f"LinkedIn: {LINKEDIN_URL}\n"
-                f"Projects: {len(projects_data)}\n"
-                "Fake projects: Removed\n"
-                "Fake experience: Removed\n"
-                "Fake certifications: Removed\n"
-                "Fake testimonials: Disabled\n"
-                "Profile photo: Pending\n"
-                "Resume: Pending\n"
+                f"Projects: {Project.objects.count()} (Preserved)\n"
+                f"Experience: {Experience.objects.count()} (Preserved)\n"
+                f"Education: {Education.objects.count()} (Preserved)\n"
+                f"Certifications: {Certification.objects.count()} (Preserved)\n"
+                f"Testimonials: {Testimonial.objects.count()} (Preserved)\n"
+                f"Profile photo: {'Active' if has_photo else 'Pending'}\n"
+                f"Resume: {'Active' if has_resume else 'Pending'}\n"
+                "Data preservation: 100% safe (No overwrites, no deletions)\n"
                 "===================================================="
             )
         )
+
