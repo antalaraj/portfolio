@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { User, Save, Loader2, CheckCircle2, AlertCircle, Camera, Upload, Trash2, Sparkles } from "lucide-react";
+import Link from "next/link";
+import { User, Save, Loader2, CheckCircle2, AlertCircle, Camera, Upload, Trash2, Sparkles, FileText, ExternalLink } from "lucide-react";
 import { adminApi } from "@/services/adminApi";
 import { Profile } from "@/types";
 
@@ -406,15 +407,57 @@ export default function AdminProfilePage() {
           )}
         </div>
 
-        <div>
-          <label className="block font-semibold text-gray-800 mb-1">Downloadable Resume PDF URL</label>
-          <input
-            type="url"
-            value={profile.resume_file_url || ""}
-            onChange={(e) => setProfile({ ...profile, resume_file_url: e.target.value })}
-            placeholder="https://..."
-            className="w-full px-3 py-2 text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600"
-          />
+        {/* Official Resume Management Card */}
+        <div className="p-5 rounded-xl border border-gray-200 bg-slate-50/70 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div className="font-semibold text-sm text-gray-900 flex items-center gap-2">
+                <FileText className="w-4 h-4 text-blue-600" />
+                <span>Official PDF Resume</span>
+                {profile.resume_file_url ? (
+                  <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                    Uploaded & Active
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+                    Pending Upload
+                  </span>
+                )}
+              </div>
+              <p className="text-[11px] text-slate-500 mt-0.5">
+                Uploaded document is displayed at <a href="/resume" target="_blank" className="text-blue-600 underline">/resume</a> and downloadable by all visitors.
+              </p>
+            </div>
+
+            <Link
+              href="/admin/resume"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md bg-blue-600 text-white hover:bg-blue-700 transition-colors shadow-2xs shrink-0"
+            >
+              <Upload className="w-3.5 h-3.5" />
+              Upload & Manage Resume &rarr;
+            </Link>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-3">
+            <input
+              type="url"
+              value={profile.resume_file_url || ""}
+              onChange={(e) => setProfile({ ...profile, resume_file_url: e.target.value })}
+              placeholder="Resume file URL (or click 'Upload & Manage Resume' above)"
+              className="flex-1 px-3 py-2 text-xs rounded-md border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 font-mono"
+            />
+            {profile.resume_file_url && (
+              <a
+                href={profile.resume_file_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-md border border-gray-300 bg-white text-slate-700 hover:bg-slate-50 transition-colors shrink-0"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+                Preview File
+              </a>
+            )}
+          </div>
         </div>
 
         <div className="flex justify-end pt-4 border-t border-gray-100">

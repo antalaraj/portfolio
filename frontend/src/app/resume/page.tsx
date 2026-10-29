@@ -2,38 +2,31 @@ import { publicApi } from "@/services/publicApi";
 import { Navbar } from "@/components/public/Navbar";
 import { Footer } from "@/components/public/Footer";
 import Link from "next/link";
-import { ArrowLeft, Download, Mail, Phone, MapPin, Globe } from "lucide-react";
-import { GithubIcon, LinkedinIcon } from "@/components/ui/Icons";
-import { formatDate } from "@/lib/utils";
+import { ArrowLeft, Download, ExternalLink, FileText, Sparkles, AlertCircle, ShieldCheck } from "lucide-react";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function ResumePage() {
-  const [profile, experience, education, skills, certifications, navItems, footerSetting] = await Promise.all([
+  const [profile, navItems, footerSetting] = await Promise.all([
     publicApi.getProfile().catch(() => ({
       full_name: "Raj Antala",
       headline: "AI Engineer | Data Science | Generative AI",
-      email: "contact@rajantala.com",
-      phone: "+91 98765 43210",
-      location: "India",
-      github_url: "https://github.com/rajantala",
-      linkedin_url: "https://linkedin.com/in/rajantala",
-      bio: "Passionate AI Engineer and Data Scientist specializing in Machine Learning, Deep Learning, and Generative AI applications.",
       resume_file_url: "",
     } as any)),
-    publicApi.getExperience().catch(() => []),
-    publicApi.getEducation().catch(() => []),
-    publicApi.getSkills().catch(() => []),
-    publicApi.getCertifications().catch(() => []),
     publicApi.getNavigation("header").catch(() => []),
     publicApi.getFooter().catch(() => undefined),
   ]);
 
+  const hasResume = Boolean(profile.resume_file_url && profile.resume_file_url.trim().length > 0);
+
   return (
     <div className="min-h-screen bg-slate-50 text-gray-900 flex flex-col">
-      <Navbar items={navItems} resumeUrl="/resume" />
+      <Navbar items={navItems} resumeUrl="/resume" avatarUrl={profile.avatar_url} />
 
-      <main className="flex-1 pt-32 pb-24 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        {/* Top Control Bar */}
-        <div className="flex items-center justify-between mb-8">
+      <main className="flex-1 pt-28 pb-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        {/* Navigation & Header Controls */}
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <Link
             href="/"
             className="inline-flex items-center text-xs font-semibold text-slate-500 hover:text-blue-600 transition-colors"
@@ -42,198 +35,139 @@ export default async function ResumePage() {
             Back to Home
           </Link>
 
-          {profile.resume_file_url ? (
+          {hasResume && (
+            <div className="flex flex-wrap items-center gap-2.5">
+              <a
+                href={profile.resume_file_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center px-3.5 py-1.5 text-xs font-medium rounded-md bg-white border border-gray-300 text-slate-700 hover:bg-slate-50 hover:border-gray-400 shadow-2xs transition-all"
+              >
+                <ExternalLink className="w-3.5 h-3.5 mr-1.5 text-slate-500" />
+                Open Fullscreen
+              </a>
+
+              <a
+                href={profile.resume_file_url}
+                download={`${(profile.full_name || "Raj_Antala").replace(/\s+/g, "_")}_Resume.pdf`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center px-4 py-1.5 text-xs font-semibold rounded-md bg-blue-600 text-white hover:bg-blue-700 shadow-2xs transition-all"
+              >
+                <Download className="w-3.5 h-3.5 mr-1.5" />
+                Download PDF Resume
+              </a>
+            </div>
+          )}
+        </div>
+
+        {/* Title Bar */}
+        <div className="bg-white p-6 sm:p-8 rounded-2xl border border-gray-200/80 shadow-2xs mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
+                Official Curriculum Vitae
+              </span>
+              <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                <ShieldCheck className="w-3 h-3 text-emerald-600" />
+                Verified Master Copy
+              </span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900">
+              {profile.full_name} — Professional Resume
+            </h1>
+            <p className="mt-1 text-xs sm:text-sm text-slate-600">
+              {profile.headline}
+            </p>
+          </div>
+
+          {hasResume && (
             <a
               href={profile.resume_file_url}
-              download
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center px-4 py-2 text-xs font-semibold rounded-md bg-blue-600 text-white hover:bg-blue-700 shadow-2xs transition-all"
+              download={`${(profile.full_name || "Raj_Antala").replace(/\s+/g, "_")}_Resume.pdf`}
+              className="sm:hidden inline-flex items-center justify-center px-4 py-2 text-xs font-semibold rounded-md bg-blue-600 text-white hover:bg-blue-700 shadow-2xs transition-all w-full"
             >
               <Download className="w-3.5 h-3.5 mr-1.5" />
               Download PDF Resume
             </a>
-          ) : (
-            <button
-              onClick={undefined}
-              className="inline-flex items-center px-4 py-2 text-xs font-semibold rounded-md bg-blue-600 text-white hover:bg-blue-700 shadow-2xs transition-all"
-            >
-              <Download className="w-3.5 h-3.5 mr-1.5" />
-              Download Resume
-            </button>
           )}
         </div>
 
-        {/* Structured Resume Canvas */}
-        <div className="bg-white rounded-xl border border-gray-200 p-8 sm:p-12 shadow-xs">
-          {/* Header */}
-          <div className="border-b border-gray-200 pb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-            <div>
-              <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
-                {profile.full_name}
-              </h1>
-              <p className="text-base font-semibold text-blue-600 mt-1">
-                {profile.headline}
-              </p>
-
-              <div className="mt-4 flex flex-wrap gap-y-2 gap-x-6 text-xs text-slate-600">
-                {profile.email && (
-                  <span className="flex items-center gap-1.5">
-                    <Mail className="w-3.5 h-3.5 text-slate-400" />
-                    {profile.email}
-                  </span>
-                )}
-                {profile.phone && (
-                  <span className="flex items-center gap-1.5">
-                    <Phone className="w-3.5 h-3.5 text-slate-400" />
-                    {profile.phone}
-                  </span>
-                )}
-                {profile.location && (
-                  <span className="flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-slate-400" />
-                    {profile.location}
-                  </span>
-                )}
-                {profile.github_url && (
-                  <a
-                    href={profile.github_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 hover:text-blue-600"
-                  >
-                    <GithubIcon className="w-3.5 h-3.5 text-slate-400" />
-                    GitHub
-                  </a>
-                )}
-                {profile.linkedin_url && (
-                  <a
-                    href={profile.linkedin_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 hover:text-blue-600"
-                  >
-                    <LinkedinIcon className="w-3.5 h-3.5 text-slate-400" />
-                    LinkedIn
-                  </a>
-                )}
+        {/* Embedded PDF Viewer or Empty State */}
+        {hasResume ? (
+          <div className="bg-white rounded-2xl border border-gray-200/90 shadow-lg overflow-hidden flex flex-col">
+            <div className="bg-slate-100/80 px-4 py-2.5 border-b border-gray-200 flex items-center justify-between text-xs text-slate-600">
+              <div className="flex items-center gap-2 font-medium">
+                <FileText className="w-4 h-4 text-blue-600" />
+                <span>Document Viewer</span>
+              </div>
+              <div className="text-[11px] text-slate-500 hidden sm:block">
+                Scroll to view complete document or download a physical copy.
               </div>
             </div>
 
-            {profile.avatar_url && (
-              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border-2 border-gray-200 shadow-sm shrink-0">
-                <img
-                  src={profile.avatar_url}
-                  alt={profile.full_name}
-                  className="w-full h-full object-cover object-center"
-                />
-              </div>
-            )}
-          </div>
+            <div className="relative w-full h-[78vh] sm:h-[88vh] bg-slate-800">
+              <iframe
+                src={`${profile.resume_file_url}#toolbar=1&navpanes=0&view=FitH`}
+                className="w-full h-full border-0 bg-white"
+                title={`${profile.full_name} Resume`}
+              />
+            </div>
 
-          {/* Professional Summary */}
-          <div className="mt-8">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-gray-900 mb-3">
-              Professional Summary
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              {profile.bio}
+            <div className="bg-slate-50 p-4 border-t border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-600">
+              <span>
+                Need a copy for ATS screening or offline review?
+              </span>
+              <div className="flex items-center gap-3">
+                <a
+                  href={profile.resume_file_url}
+                  download
+                  className="font-semibold text-blue-600 hover:text-blue-700 inline-flex items-center gap-1"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  Direct PDF Download
+                </a>
+                <span className="text-slate-300">|</span>
+                <a
+                  href={profile.resume_file_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-semibold text-slate-700 hover:text-blue-600 inline-flex items-center gap-1"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  Open in New Tab
+                </a>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-white rounded-2xl border border-gray-200 p-12 sm:p-16 text-center max-w-2xl mx-auto shadow-2xs">
+            <div className="w-16 h-16 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-4 border border-blue-100">
+              <FileText className="w-8 h-8" />
+            </div>
+            <h3 className="text-lg font-bold text-gray-900 mb-2">
+              Resume Document Being Updated
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-500 leading-relaxed mb-6">
+              The official PDF resume will be uploaded by the administrator shortly. In the meantime, you can review technical skills and project case studies directly on the portfolio.
             </p>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <Link
+                href="/projects"
+                className="inline-flex items-center px-4 py-2 text-xs font-semibold rounded-md bg-blue-600 text-white hover:bg-blue-700 shadow-2xs transition-colors"
+              >
+                <Sparkles className="w-3.5 h-3.5 mr-1.5" />
+                View Projects Portfolio
+              </Link>
+              <Link
+                href="/#contact"
+                className="inline-flex items-center px-4 py-2 text-xs font-semibold rounded-md border border-gray-300 bg-white text-slate-700 hover:bg-slate-50 transition-colors"
+              >
+                Get in Touch Directly
+              </Link>
+            </div>
           </div>
-
-          {/* Work Experience */}
-          {experience.length > 0 && (
-            <div className="mt-8 pt-8 border-t border-gray-100">
-              <h2 className="text-xs font-bold uppercase tracking-wider text-gray-900 mb-4">
-                Work Experience & Internships
-              </h2>
-              <div className="space-y-6">
-                {experience.map((exp) => (
-                  <div key={exp.id}>
-                    <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between">
-                      <div>
-                        <span className="text-sm font-bold text-gray-900">{exp.job_title}</span>
-                        <span className="text-xs font-medium text-slate-500"> — {exp.company}</span>
-                      </div>
-                      <span className="text-xs text-slate-400 font-mono">
-                        {formatDate(exp.start_date)} – {exp.is_current ? "Present" : formatDate(exp.end_date)}
-                      </span>
-                    </div>
-                    {exp.description && (
-                      <p className="mt-1.5 text-xs text-slate-600 leading-relaxed">
-                        {exp.description}
-                      </p>
-                    )}
-                    {exp.responsibilities && (
-                      <ul className="mt-2 list-disc list-inside space-y-1 text-xs text-slate-600">
-                        {exp.responsibilities.map((r, i) => (
-                          <li key={i}>{r}</li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Education */}
-          {education.length > 0 && (
-            <div className="mt-8 pt-8 border-t border-gray-100">
-              <h2 className="text-xs font-bold uppercase tracking-wider text-gray-900 mb-4">
-                Education
-              </h2>
-              <div className="space-y-4">
-                {education.map((edu) => (
-                  <div key={edu.id} className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between">
-                    <div>
-                      <div className="text-sm font-bold text-gray-900">{edu.degree}</div>
-                      <div className="text-xs text-slate-500">{edu.institution} • {edu.field_of_study}</div>
-                    </div>
-                    <span className="text-xs text-slate-400 font-mono">
-                      {formatDate(edu.start_date)} – {edu.end_date ? formatDate(edu.end_date) : "Present"}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Technical Skills */}
-          {skills.length > 0 && (
-            <div className="mt-8 pt-8 border-t border-gray-100">
-              <h2 className="text-xs font-bold uppercase tracking-wider text-gray-900 mb-4">
-                Technical Skills
-              </h2>
-              <div className="space-y-3">
-                {skills.map((category) => (
-                  <div key={category.id} className="text-xs">
-                    <span className="font-semibold text-gray-800">{category.name}: </span>
-                    <span className="text-slate-600">
-                      {category.skills?.map((s) => s.name).join(", ")}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Certifications */}
-          {certifications.length > 0 && (
-            <div className="mt-8 pt-8 border-t border-gray-100">
-              <h2 className="text-xs font-bold uppercase tracking-wider text-gray-900 mb-3">
-                Certifications
-              </h2>
-              <ul className="space-y-1.5 text-xs text-slate-600">
-                {certifications.map((c) => (
-                  <li key={c.id}>
-                    <span className="font-semibold text-gray-900">{c.title}</span> — {c.issuer} ({formatDate(c.issue_date)})
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
+        )}
       </main>
 
       <Footer setting={footerSetting} navItems={navItems} profile={profile} />
