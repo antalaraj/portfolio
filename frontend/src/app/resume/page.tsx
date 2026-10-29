@@ -7,6 +7,11 @@ import { ArrowLeft, Download, ExternalLink, FileText, Sparkles, AlertCircle, Shi
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+function resolveMediaUrl(url?: string): string {
+  if (!url) return "";
+  return url.replace(/^https?:\/\/(127\.0\.0\.1|localhost):8000(\/media\/.*)$/, "$2");
+}
+
 export default async function ResumePage() {
   const [profile, navItems, footerSetting] = await Promise.all([
     publicApi.getProfile().catch(() => ({
@@ -38,7 +43,7 @@ export default async function ResumePage() {
           {hasResume && (
             <div className="flex flex-wrap items-center gap-2.5">
               <a
-                href={profile.resume_file_url}
+                href={resolveMediaUrl(profile.resume_file_url)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center px-3.5 py-1.5 text-xs font-medium rounded-md bg-white border border-gray-300 text-slate-700 hover:bg-slate-50 hover:border-gray-400 shadow-2xs transition-all"
@@ -48,7 +53,7 @@ export default async function ResumePage() {
               </a>
 
               <a
-                href={profile.resume_file_url}
+                href={resolveMediaUrl(profile.resume_file_url)}
                 download={`${(profile.full_name || "Raj_Antala").replace(/\s+/g, "_")}_Resume.pdf`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -83,7 +88,7 @@ export default async function ResumePage() {
 
           {hasResume && (
             <a
-              href={profile.resume_file_url}
+              href={resolveMediaUrl(profile.resume_file_url)}
               download={`${(profile.full_name || "Raj_Antala").replace(/\s+/g, "_")}_Resume.pdf`}
               className="sm:hidden inline-flex items-center justify-center px-4 py-2 text-xs font-semibold rounded-md bg-blue-600 text-white hover:bg-blue-700 shadow-2xs transition-all w-full"
             >
@@ -107,11 +112,17 @@ export default async function ResumePage() {
             </div>
 
             <div className="relative w-full h-[78vh] sm:h-[88vh] bg-slate-800">
-              <iframe
-                src={`${profile.resume_file_url}#toolbar=1&navpanes=0&view=FitH`}
+              <object
+                data={`${resolveMediaUrl(profile.resume_file_url)}#toolbar=1&navpanes=0&view=FitH`}
+                type="application/pdf"
                 className="w-full h-full border-0 bg-white"
-                title={`${profile.full_name} Resume`}
-              />
+              >
+                <iframe
+                  src={`${resolveMediaUrl(profile.resume_file_url)}#toolbar=1&navpanes=0&view=FitH`}
+                  className="w-full h-full border-0 bg-white"
+                  title={`${profile.full_name} Resume`}
+                />
+              </object>
             </div>
 
             <div className="bg-slate-50 p-4 border-t border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-600">
@@ -120,8 +131,8 @@ export default async function ResumePage() {
               </span>
               <div className="flex items-center gap-3">
                 <a
-                  href={profile.resume_file_url}
-                  download
+                  href={resolveMediaUrl(profile.resume_file_url)}
+                  download={`${(profile.full_name || "Raj_Antala").replace(/\s+/g, "_")}_Resume.pdf`}
                   className="font-semibold text-blue-600 hover:text-blue-700 inline-flex items-center gap-1"
                 >
                   <Download className="w-3.5 h-3.5" />
@@ -129,7 +140,7 @@ export default async function ResumePage() {
                 </a>
                 <span className="text-slate-300">|</span>
                 <a
-                  href={profile.resume_file_url}
+                  href={resolveMediaUrl(profile.resume_file_url)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="font-semibold text-slate-700 hover:text-blue-600 inline-flex items-center gap-1"

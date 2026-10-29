@@ -91,5 +91,20 @@ urlpatterns = [
     path('api/v1/admin', include(admin_router.urls)),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+from django.urls import re_path
+from django.views.static import serve as static_serve
+from django.views.decorators.clickjacking import xframe_options_exempt
+import re
+
+@xframe_options_exempt
+def serve_media_with_xframe_exempt(request, path, document_root=None, show_indexes=False):
+    response = static_serve(request, path, document_root=document_root, show_indexes=show_indexes)
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Cross-Origin-Resource-Policy'] = 'cross-origin'
+    return response
+
+if settings.MEDIA_URL.startswith('/'):
+    media_prefix = settings.MEDIA_URL.lstrip('/')
+    urlpatterns += [
+        re_path(r'^%s(?P<path>.*)$' % re.escape(media_prefix), serve_media_with_xframe_exempt, {'document_root': settings.MEDIA_ROOT}),
+    ]

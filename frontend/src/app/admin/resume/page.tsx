@@ -20,6 +20,11 @@ import {
 import { adminApi } from "@/services/adminApi";
 import { Profile } from "@/types";
 
+function resolveMediaUrl(url?: string): string {
+  if (!url) return "";
+  return url.replace(/^https?:\/\/(127\.0\.0\.1|localhost):8000(\/media\/.*)$/, "$2");
+}
+
 export default function AdminResumePage() {
   const [profile, setProfile] = useState<Partial<Profile>>({});
   const [loading, setLoading] = useState(true);
@@ -298,8 +303,8 @@ export default function AdminResumePage() {
                 {profile.resume_file_url && (
                   <div className="flex items-center gap-2">
                     <a
-                      href={profile.resume_file_url}
-                      download
+                      href={resolveMediaUrl(profile.resume_file_url)}
+                      download={`${(profile.full_name || "Raj_Antala").replace(/\s+/g, "_")}_Resume.pdf`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-md bg-blue-600 text-white hover:bg-blue-700 shadow-2xs transition-colors"
@@ -344,7 +349,7 @@ export default function AdminResumePage() {
                       )}
                     </button>
                     <a
-                      href={profile.resume_file_url}
+                      href={resolveMediaUrl(profile.resume_file_url)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="px-2.5 py-1 text-[11px] font-semibold text-slate-700 hover:text-blue-600 bg-white border border-gray-200 rounded shadow-2xs inline-flex items-center gap-1 transition-colors"
@@ -359,7 +364,7 @@ export default function AdminResumePage() {
                     <div className="bg-slate-200/80 px-3 py-1.5 text-[11px] font-medium text-slate-700 flex items-center justify-between border-b border-gray-300/80">
                       <span>Live Embedded Document Preview</span>
                       <a
-                        href={profile.resume_file_url}
+                        href={resolveMediaUrl(profile.resume_file_url)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-blue-600 hover:underline"
@@ -367,11 +372,17 @@ export default function AdminResumePage() {
                         Fullscreen View &rarr;
                       </a>
                     </div>
-                    <iframe
-                      src={`${profile.resume_file_url}#toolbar=0&navpanes=0`}
+                    <object
+                      data={`${resolveMediaUrl(profile.resume_file_url)}#toolbar=0&navpanes=0`}
+                      type="application/pdf"
                       className="w-full h-[540px] border-0 bg-white"
-                      title="Current Resume Preview"
-                    />
+                    >
+                      <iframe
+                        src={`${resolveMediaUrl(profile.resume_file_url)}#toolbar=0&navpanes=0`}
+                        className="w-full h-[540px] border-0 bg-white"
+                        title="Current Resume Preview"
+                      />
+                    </object>
                   </div>
                 </div>
               ) : (
