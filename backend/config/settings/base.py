@@ -21,7 +21,11 @@ DJANGO_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    # cloudinary_storage MUST appear before staticfiles so that its
+    # collectstatic override is picked up by Django.
+    'cloudinary_storage',
     'django.contrib.staticfiles',
+    'cloudinary',
 ]
 
 THIRD_PARTY_APPS = [
@@ -161,6 +165,13 @@ CSRF_COOKIE_SAMESITE = 'Lax'
 CLOUDINARY_CLOUD_NAME = os.getenv('CLOUDINARY_CLOUD_NAME', '')
 CLOUDINARY_API_KEY = os.getenv('CLOUDINARY_API_KEY', '')
 CLOUDINARY_API_SECRET = os.getenv('CLOUDINARY_API_SECRET', '')
+
+# django-cloudinary-storage requires this dict to locate credentials.
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': CLOUDINARY_CLOUD_NAME,
+    'API_KEY': CLOUDINARY_API_KEY,
+    'API_SECRET': CLOUDINARY_API_SECRET,
+}
 
 if CLOUDINARY_CLOUD_NAME and CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET:
     import cloudinary

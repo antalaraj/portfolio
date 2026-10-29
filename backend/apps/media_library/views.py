@@ -48,21 +48,34 @@ class AdminMediaUploadView(views.APIView):
         if getattr(settings, 'CLOUDINARY_CLOUD_NAME', None) and getattr(settings, 'CLOUDINARY_API_KEY', None):
             try:
                 import cloudinary.uploader
+
+                # Documents (PDF, DOC, etc.) must use resource_type='raw'
+                # so Cloudinary serves them with the correct MIME type.
+                # Images use 'image' with quality optimizations.
+                is_image = content_type.startswith('image/')
+                upload_kwargs = {
+                    'folder': 'raj_portfolio',
+                    'resource_type': 'image' if is_image else 'raw',
+                }
+                if is_image:
+                    upload_kwargs.update({
+                        'quality': 'auto:best',
+                        'flags': 'attachment:false|preserve_transparency',
+                    })
+
                 upload_result = cloudinary.uploader.upload(
                     uploaded_file,
-                    folder='raj_portfolio',
-                    resource_type='auto',
-                    # Preserve maximum image quality – no lossy re-compression
-                    quality='auto:best',
-                    flags='attachment:false|preserve_transparency',
+                    **upload_kwargs,
                 )
-                # Build a high-quality delivery URL with q_auto:best transformation
                 raw_url = upload_result.get('secure_url', upload_result.get('url'))
-                # Insert q_auto:best,f_auto into the Cloudinary URL for optimal delivery
-                if '/upload/' in raw_url:
+
+                # Apply quality transformations only for images; documents
+                # need the original URL for correct download behavior.
+                if is_image and '/upload/' in raw_url:
                     file_url = raw_url.replace('/upload/', '/upload/q_auto:best,f_auto/')
                 else:
                     file_url = raw_url
+
                 public_id = upload_result.get('public_id', '')
                 width = upload_result.get('width')
                 height = upload_result.get('height')
@@ -110,7 +123,9 @@ class AdminMediaAssetViewSet(viewsets.ModelViewSet):
         if getattr(settings, 'CLOUDINARY_CLOUD_NAME', None) and asset.public_id and not asset.public_id.startswith('uploads/'):
             try:
                 import cloudinary.uploader
-                cloudinary.uploader.destroy(asset.public_id)
+                # Documents were uploaded as resource_type='raw'; images as 'image'.
+                res_type = 'raw' if asset.file_type == 'document' else 'image'
+                cloudinary.uploader.destroy(asset.public_id, resource_type=res_type)
             except Exception:
                 pass
         elif asset.public_id and asset.public_id.startswith('uploads/'):
