@@ -322,6 +322,67 @@ export default function WebsiteBuilderPage() {
               />
             </div>
 
+            {/* About Section Specific: Quick Narrative & Link to Full Editor */}
+            {editingSection.section_type === "about" && (
+              <div className="p-4 rounded-xl border border-blue-200 bg-blue-50/50 space-y-3 text-xs">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-bold text-gray-900 flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+                    About Me Narrative & Capability Cards
+                  </h4>
+                  <a
+                    href="/admin/about"
+                    className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-600 hover:text-blue-800 hover:underline"
+                  >
+                    Open Full About Editor <ExternalLink className="w-3 h-3" />
+                  </a>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                    Bio Paragraph 1 (Journey & Theory)
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={editingSection.config_data?.bio_paragraph_1 || ""}
+                    onChange={(e) =>
+                      setEditingSection({
+                        ...editingSection,
+                        config_data: {
+                          ...(editingSection.config_data || {}),
+                          bio_paragraph_1: e.target.value,
+                        },
+                      })
+                    }
+                    placeholder="My journey centers on applied Artificial Intelligence..."
+                    className="w-full px-2.5 py-1.5 text-xs rounded-md border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                    Core Philosophy / Narrative Ending
+                  </label>
+                  <input
+                    type="text"
+                    value={editingSection.config_data?.core_philosophy || editingSection.config_data?.bio_paragraph_3 || ""}
+                    onChange={(e) =>
+                      setEditingSection({
+                        ...editingSection,
+                        config_data: {
+                          ...(editingSection.config_data || {}),
+                          core_philosophy: e.target.value,
+                          bio_paragraph_3: e.target.value,
+                        },
+                      })
+                    }
+                    placeholder="Dedicated to building transparent, high-leverage artificial intelligence systems..."
+                    className="w-full px-2.5 py-1.5 text-xs rounded-md border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600"
+                  />
+                </div>
+              </div>
+            )}
+
             {/* Hero Section Specific: Experience Badge */}
             {editingSection.section_type === "hero" && (
               <div className="p-4 rounded-xl border border-gray-200 bg-slate-50/70 space-y-4">

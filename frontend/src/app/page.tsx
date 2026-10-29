@@ -79,7 +79,9 @@ export default async function HomePage() {
         <HeroSection profile={profile} config={heroConfig} />
 
         {/* About Section */}
-        <AboutSection profile={profile} config={aboutConfig} />
+        {getSection("about")?.is_active !== false && (
+          <AboutSection profile={profile} section={getSection("about")} config={aboutConfig} />
+        )}
 
         {/* Skills Section */}
         {skills.length > 0 && (

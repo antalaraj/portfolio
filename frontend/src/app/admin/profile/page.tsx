@@ -166,6 +166,15 @@ export default function AdminProfilePage() {
             onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
             className="w-full px-3 py-2 text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 leading-relaxed"
           />
+          <div className="flex items-center justify-between mt-1 text-[11px] text-slate-500">
+            <span>Primary biography used across metadata and default About narrative.</span>
+            <a
+              href="/admin/about"
+              className="text-blue-600 hover:text-blue-700 font-semibold hover:underline inline-flex items-center gap-1"
+            >
+              Configure full About Me Section (Stats, Cards, Narrative) &rarr;
+            </a>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
