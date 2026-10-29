@@ -720,24 +720,68 @@ class Command(BaseCommand):
             (
                 SectionType.ABOUT,
                 "About Me",
-                "Building Practical AI Applications",
+                "Building practical, intelligent AI systems with modern LLMs, computer vision, and robust engineering.",
                 2,
                 {
+                    "badge_text": "About Me",
+                    "headline": "Building practical, intelligent AI systems with modern LLMs, computer vision, and robust engineering.",
+                    "bio_paragraph_1": (
+                        "I am Antala Raj, a postgraduate student pursuing a PGDM in Artificial Intelligence "
+                        "and Data Science at Adani Institute of Digital Technology Management (AIDTM), with a "
+                        "Bachelor of Computer Applications (BCA) from LJ University, Ahmedabad. I bridge mathematical "
+                        "foundations with production reality, building machine learning architectures that solve authentic industry challenges."
+                    ),
+                    "bio_paragraph_2": (
+                        "During my AI Engineer internship at OpenSpectrum AI Private Limited, I contributed to Luma Assistant, "
+                        "Google Gemini API integration, AI-powered ERP capabilities, AWS SES integration, and smart glasses functionality. "
+                        "From developing wound image segmentation prototypes (AuraMed-AI) using ConvNeXt and OpenCV to RAG-powered "
+                        "meeting intelligence and grant proposal drafting, I focus on reproducible evaluations, agentic workflows, "
+                        "and reliable deployment."
+                    ),
+                    "bio_paragraph_3": (
+                        "Learning through practical implementation, building useful AI applications, and continuously "
+                        "improving technical skills across Generative AI, Machine Learning, and scalable software systems."
+                    ),
                     "career_focus": (
                         "Artificial Intelligence, Generative AI, "
                         "Agentic AI, Machine Learning, Data Science, "
                         "and Computer Vision"
                     ),
-
                     "years_experience": (
                         "AI Engineer Intern and PGDM Student"
                     ),
-
                     "core_philosophy": (
                         "Learning through practical implementation, "
                         "building useful AI applications, and "
                         "continuously improving technical skills."
-                    )
+                    ),
+                    "stats": [
+                        {"value": "AI & ML", "label": "AIDTM (PGDM) & BCA"},
+                        {"value": "10+", "label": "Shipped AI & CV Projects"},
+                        {"value": "Industry Tested", "label": "OpenSpectrum AI Intern"}
+                    ],
+                    "highlights": [
+                        {
+                            "icon": "Bot",
+                            "title": "Generative & Agentic AI",
+                            "desc": "Architecting autonomous workflows, contextual RAG, and multi-model integrations with LangChain, LangGraph, Google Gemini, and Groq."
+                        },
+                        {
+                            "icon": "Cpu",
+                            "title": "Computer Vision & Medical AI",
+                            "desc": "Developing wound segmentation (AuraMed-AI) using LAB color-space, ConvNeXt transfer learning, OpenCV, PyTorch, and defect detection."
+                        },
+                        {
+                            "icon": "Server",
+                            "title": "Full-Stack AI & Backend Systems",
+                            "desc": "Engineering robust REST APIs with FastAPI, Django, and Flask, paired with responsive cross-platform apps via React Native & Expo."
+                        },
+                        {
+                            "icon": "LineChart",
+                            "title": "Data Science & Analytics",
+                            "desc": "Conducting rigorous exploratory data analysis, feature engineering, and statistical modeling with Pandas, NumPy, and Scikit-Learn."
+                        }
+                    ]
                 }
             ),
 

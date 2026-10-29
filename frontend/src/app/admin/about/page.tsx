@@ -66,47 +66,47 @@ export default function AdminAboutPage() {
   // Form Fields
   const [badgeText, setBadgeText] = useState("About Me");
   const [headline, setHeadline] = useState(
-    "Engineering with curiosity, mathematical foundation, and engineering precision."
+    "Building practical, intelligent AI systems with modern LLMs, computer vision, and robust engineering."
   );
   const [paragraph1, setParagraph1] = useState(
-    "My journey centers on applied Artificial Intelligence and Data Science. I bridge mathematical theory with production reality, building machine learning architectures that solve authentic industry challenges."
+    "I am Antala Raj, a postgraduate student pursuing a PGDM in Artificial Intelligence and Data Science at Adani Institute of Digital Technology Management (AIDTM), with a Bachelor of Computer Applications (BCA) from LJ University, Ahmedabad. I bridge mathematical foundations with production reality, building machine learning architectures that solve authentic industry challenges."
   );
   const [paragraph2, setParagraph2] = useState(
-    "Whether fine-tuning open weights with parameter-efficient techniques, designing deterministic multi-agent RAG graphs, or optimizing edge computer vision inference, I believe in rigorous empirical evaluation, clean maintainable code, and human-centric engineering."
+    "During my AI Engineer internship at OpenSpectrum AI Private Limited, I contributed to Luma Assistant, Google Gemini API integration, AI-powered ERP capabilities, AWS SES integration, and smart glasses functionality. From developing wound image segmentation prototypes (AuraMed-AI) using ConvNeXt and OpenCV to RAG-powered meeting intelligence and grant proposal drafting, I focus on reproducible evaluations, agentic workflows, and reliable deployment."
   );
   const [corePhilosophy, setCorePhilosophy] = useState(
-    "Dedicated to building transparent, high-leverage artificial intelligence systems that elevate human capability."
+    "Learning through practical implementation, building useful AI applications, and continuously improving technical skills across Generative AI, Machine Learning, and scalable software systems."
   );
   const [isActive, setIsActive] = useState(true);
 
   // Stats (3 items)
   const [stats, setStats] = useState<StatItem[]>([
-    { value: "AI / ML", label: "Core Focus" },
-    { value: "94%+", label: "RAG Groundedness" },
-    { value: "Active", label: "Ready for Roles" },
+    { value: "AI & ML", label: "AIDTM (PGDM) & BCA" },
+    { value: "10+", label: "Shipped AI & CV Projects" },
+    { value: "Industry Tested", label: "OpenSpectrum AI Intern" },
   ]);
 
   // Highlight capability cards (4 items)
   const [highlights, setHighlights] = useState<HighlightCard[]>([
     {
+      icon: "Bot",
+      title: "Generative & Agentic AI",
+      desc: "Architecting autonomous workflows, contextual RAG, and multi-model integrations with LangChain, LangGraph, Google Gemini, and Groq.",
+    },
+    {
       icon: "Cpu",
-      title: "Generative AI & LLMs",
-      desc: "Architecting multi-agent workflows, contextual retrieval (RAG), and fine-tuned open-source models.",
+      title: "Computer Vision & Medical AI",
+      desc: "Developing wound segmentation (AuraMed-AI) using LAB color-space, ConvNeXt transfer learning, OpenCV, PyTorch, and defect detection.",
     },
     {
-      icon: "Network",
-      title: "Deep Learning Systems",
-      desc: "Training vision transformers and neural defect detection pipelines optimized for low-latency inference.",
+      icon: "Server",
+      title: "Full-Stack AI & Backend Systems",
+      desc: "Engineering robust REST APIs with FastAPI, Django, and Flask, paired with responsive cross-platform apps via React Native & Expo.",
     },
     {
-      icon: "Database",
-      title: "Data & Vector Pipelines",
-      desc: "Engineering scalable ETL pipelines, pgvector embeddings, and hybrid sparse/dense retrieval search.",
-    },
-    {
-      icon: "ShieldCheck",
-      title: "Production AI Rigor",
-      desc: "Benchmarking factual grounding, hallucination minimization, and robust Dockerized API deployment.",
+      icon: "LineChart",
+      title: "Data Science & Analytics",
+      desc: "Conducting rigorous exploratory data analysis, feature engineering, and statistical modeling with Pandas, NumPy, and Scikit-Learn.",
     },
   ]);
 

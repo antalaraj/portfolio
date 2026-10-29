@@ -60,21 +60,21 @@ export function AboutSection({ profile, section, config = {} }: AboutSectionProp
   const headline =
     config.headline ||
     section?.subtitle ||
-    "Engineering with curiosity, mathematical foundation, and engineering precision.";
+    "Building practical, intelligent AI systems with modern LLMs, computer vision, and robust engineering.";
 
   const p1 =
     config.bio_paragraph_1 ||
     profile?.bio ||
-    "My journey centers on applied Artificial Intelligence and Data Science. I bridge mathematical theory with production reality, building machine learning architectures that solve authentic industry challenges.";
+    "I am Antala Raj, a postgraduate student pursuing a PGDM in Artificial Intelligence and Data Science at Adani Institute of Digital Technology Management (AIDTM), with a Bachelor of Computer Applications (BCA) from LJ University, Ahmedabad. I bridge mathematical foundations with production reality, building machine learning architectures that solve authentic industry challenges.";
 
   const p2 =
     config.bio_paragraph_2 ||
-    "Whether fine-tuning open weights with parameter-efficient techniques, designing deterministic multi-agent RAG graphs, or optimizing edge computer vision inference, I believe in rigorous empirical evaluation, clean maintainable code, and human-centric engineering.";
+    "During my AI Engineer internship at OpenSpectrum AI Private Limited, I contributed to Luma Assistant, Google Gemini API integration, AI-powered ERP capabilities, AWS SES integration, and smart glasses functionality. From developing wound image segmentation prototypes (AuraMed-AI) using ConvNeXt and OpenCV to RAG-powered meeting intelligence and grant proposal drafting, I focus on reproducible evaluations, agentic workflows, and reliable deployment.";
 
   const p3 =
     config.bio_paragraph_3 ||
     config.core_philosophy ||
-    "Dedicated to building transparent, high-leverage artificial intelligence systems that elevate human capability.";
+    "Learning through practical implementation, building useful AI applications, and continuously improving technical skills across Generative AI, Machine Learning, and scalable software systems.";
 
   // Quick stats
   const stats =
@@ -82,16 +82,16 @@ export function AboutSection({ profile, section, config = {} }: AboutSectionProp
       ? config.stats
       : [
           {
-            value: config.stat_1_value || "AI / ML",
-            label: config.stat_1_label || "Core Focus",
+            value: config.stat_1_value || "AI & ML",
+            label: config.stat_1_label || "AIDTM (PGDM) & BCA",
           },
           {
-            value: config.stat_2_value || "94%+",
-            label: config.stat_2_label || "RAG Groundedness",
+            value: config.stat_2_value || "10+",
+            label: config.stat_2_label || "Shipped AI & CV Projects",
           },
           {
-            value: config.stat_3_value || "Active",
-            label: config.stat_3_label || "Ready for Roles",
+            value: config.stat_3_value || "Industry Tested",
+            label: config.stat_3_label || "OpenSpectrum AI Intern",
           },
         ];
 
@@ -101,32 +101,32 @@ export function AboutSection({ profile, section, config = {} }: AboutSectionProp
       ? config.highlights
       : [
           {
-            icon: config.card_1_icon || "Cpu",
-            title: config.card_1_title || "Generative AI & LLMs",
+            icon: config.card_1_icon || "Bot",
+            title: config.card_1_title || "Generative & Agentic AI",
             desc:
               config.card_1_desc ||
-              "Architecting multi-agent workflows, contextual retrieval (RAG), and fine-tuned open-source models.",
+              "Architecting autonomous workflows, contextual RAG, and multi-model integrations with LangChain, LangGraph, Google Gemini, and Groq.",
           },
           {
-            icon: config.card_2_icon || "Network",
-            title: config.card_2_title || "Deep Learning Systems",
+            icon: config.card_2_icon || "Cpu",
+            title: config.card_2_title || "Computer Vision & Medical AI",
             desc:
               config.card_2_desc ||
-              "Training vision transformers and neural defect detection pipelines optimized for low-latency inference.",
+              "Developing wound segmentation (AuraMed-AI) using LAB color-space, ConvNeXt transfer learning, OpenCV, PyTorch, and defect detection.",
           },
           {
-            icon: config.card_3_icon || "Database",
-            title: config.card_3_title || "Data & Vector Pipelines",
+            icon: config.card_3_icon || "Server",
+            title: config.card_3_title || "Full-Stack AI & Backend Systems",
             desc:
               config.card_3_desc ||
-              "Engineering scalable ETL pipelines, pgvector embeddings, and hybrid sparse/dense retrieval search.",
+              "Engineering robust REST APIs with FastAPI, Django, and Flask, paired with responsive cross-platform apps via React Native & Expo.",
           },
           {
-            icon: config.card_4_icon || "ShieldCheck",
-            title: config.card_4_title || "Production AI Rigor",
+            icon: config.card_4_icon || "LineChart",
+            title: config.card_4_title || "Data Science & Analytics",
             desc:
               config.card_4_desc ||
-              "Benchmarking factual grounding, hallucination minimization, and robust Dockerized API deployment.",
+              "Conducting rigorous exploratory data analysis, feature engineering, and statistical modeling with Pandas, NumPy, and Scikit-Learn.",
           },
         ];
 
