@@ -136,6 +136,7 @@ export function ContactSection({
                     <input
                       id="contact-name"
                       type="text"
+                      suppressHydrationWarning
                       required
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -154,6 +155,7 @@ export function ContactSection({
                     <input
                       id="contact-email"
                       type="email"
+                      suppressHydrationWarning
                       required
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -173,6 +175,7 @@ export function ContactSection({
                   <input
                     id="contact-subject"
                     type="text"
+                    suppressHydrationWarning
                     required
                     value={formData.subject}
                     onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
@@ -190,6 +193,7 @@ export function ContactSection({
                   </label>
                   <textarea
                     id="contact-message"
+                    suppressHydrationWarning
                     required
                     rows={5}
                     value={formData.message}
@@ -201,6 +205,7 @@ export function ContactSection({
 
                 <button
                   type="submit"
+                  suppressHydrationWarning
                   disabled={loading}
                   className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-2.5 rounded-md bg-blue-600 text-white font-medium text-sm hover:bg-blue-700 shadow-2xs transition-all disabled:opacity-50"
                 >

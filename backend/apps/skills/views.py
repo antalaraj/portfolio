@@ -13,6 +13,8 @@ class PublicSkillsView(views.APIView):
         output = []
         for cat in categories:
             visible_skills = cat.skills.filter(is_visible=True).order_by('display_order')
+            if not visible_skills.exists():
+                continue
             output.append({
                 'id': str(cat.id),
                 'name': cat.name,

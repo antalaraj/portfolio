@@ -153,6 +153,7 @@ export function HeroSection({ profile, config = {} }: HeroSectionProps) {
                       {/* Expand / 4K Badge */}
                       <button
                         type="button"
+                        suppressHydrationWarning
                         onClick={() => setShowLightbox(true)}
                         className="absolute bottom-3 right-3 bg-gray-900/70 hover:bg-gray-900/90 backdrop-blur-md text-white text-[11px] font-semibold py-1.5 px-2.5 rounded-lg flex items-center gap-1.5 transition-all shadow-md group/btn opacity-85 hover:opacity-100"
                         title="View Ultra-HD Master Photo"
@@ -210,6 +211,8 @@ export function HeroSection({ profile, config = {} }: HeroSectionProps) {
           onClick={() => setShowLightbox(false)}
         >
           <button
+            type="button"
+            suppressHydrationWarning
             onClick={() => setShowLightbox(false)}
             className="absolute top-5 right-5 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
             aria-label="Close Preview"

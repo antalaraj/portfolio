@@ -100,6 +100,8 @@ export function Navbar({ items = [], resumeUrl = "/resume", avatarUrl }: NavbarP
 
         {/* Mobile Menu Button */}
         <button
+          type="button"
+          suppressHydrationWarning
           onClick={() => setIsOpen(!isOpen)}
           className="md:hidden p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-slate-100 transition-colors"
           aria-label="Toggle navigation menu"

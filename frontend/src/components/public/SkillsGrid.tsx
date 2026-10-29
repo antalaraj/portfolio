@@ -95,6 +95,8 @@ export function SkillsGrid({
         {categories.length > 1 && (
           <div className="mt-8 flex flex-wrap gap-2 pb-2">
             <button
+              type="button"
+              suppressHydrationWarning
               onClick={() => setSelectedSlug("all")}
               className={`px-3.5 py-1.5 text-xs font-semibold rounded-md transition-all ${
                 selectedSlug === "all"
@@ -107,6 +109,8 @@ export function SkillsGrid({
             {categories.map((cat) => (
               <button
                 key={cat.id}
+                type="button"
+                suppressHydrationWarning
                 onClick={() => setSelectedSlug(cat.slug)}
                 className={`px-3.5 py-1.5 text-xs font-semibold rounded-md transition-all ${
                   selectedSlug === cat.slug

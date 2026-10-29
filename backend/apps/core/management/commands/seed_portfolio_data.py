@@ -1056,7 +1056,8 @@ class Command(BaseCommand):
                     ("Streamlit", "LayoutDashboard")
                 ]
             )
-        ]
+        # Remove legacy / obsolete mock categories if present
+        SkillCategory.objects.filter(slug__in=["ml-dl", "gen-ai", "backend-db", "devops"]).delete()
 
         for cat_name, cat_slug, cat_order, skill_list in skills_structure:
 

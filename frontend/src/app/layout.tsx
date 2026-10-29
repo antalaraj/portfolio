@@ -30,8 +30,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-      <body className="min-h-screen bg-white text-gray-900 selection:bg-blue-100 selection:text-blue-900">
+    <html lang="en" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body suppressHydrationWarning className="min-h-screen bg-white text-gray-900 selection:bg-blue-100 selection:text-blue-900">
         <Suspense fallback={null}>
           <AnalyticsTracker />
         </Suspense>
