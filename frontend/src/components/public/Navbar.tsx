@@ -50,9 +50,8 @@ export function Navbar({ items = [], resumeUrl = "/resume", avatarUrl }: NavbarP
                 src={resolveMediaUrl(avatarUrl)}
                 alt="Raj Antala"
                 fill
-                sizes="96px"
-                quality={95}
-                unoptimized
+                sizes="32px"
+                quality={90}
                 className="object-cover object-[center_15%]"
                 priority
               />

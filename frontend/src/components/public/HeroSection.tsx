@@ -143,10 +143,9 @@ export function HeroSection({ profile, config = {} }: HeroSectionProps) {
                         src={resolveMediaUrl(profile.avatar_url)}
                         alt={`${profile.full_name} – AI Engineer & Data Scientist`}
                         fill
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 880px"
-                        quality={95}
+                        sizes="(max-width: 640px) 340px, (max-width: 1024px) 400px, 440px"
+                        quality={90}
                         priority
-                        unoptimized
                         className="object-cover object-[center_20%] transition-transform duration-700 ease-out group-hover:scale-105 cursor-pointer"
                         onClick={() => setShowLightbox(true)}
                         title="Click to view full-resolution photo"
@@ -231,9 +230,8 @@ export function HeroSection({ profile, config = {} }: HeroSectionProps) {
                 src={resolveMediaUrl(profile.avatar_url)}
                 alt={profile.full_name}
                 fill
-                sizes="100vw"
-                quality={100}
-                unoptimized
+                sizes="(max-width: 800px) 90vw, 800px"
+                quality={95}
                 className="object-contain rounded-xl shadow-2xl"
                 priority
               />

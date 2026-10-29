@@ -30,13 +30,13 @@ class AdminMediaUploadView(views.APIView):
                 }
             }, status=status.HTTP_400_BAD_REQUEST)
 
-        # Check file size (limit: 10MB)
-        if uploaded_file.size > 10 * 1024 * 1024:
+        # Check file size (limit: 25MB for high-resolution photos)
+        if uploaded_file.size > 25 * 1024 * 1024:
             return Response({
                 'success': False,
                 'error': {
                     'code': 'FILE_TOO_LARGE',
-                    'message': 'File size exceeds 10MB limit.'
+                    'message': 'File size exceeds 25MB limit.'
                 }
             }, status=status.HTTP_400_BAD_REQUEST)
 
@@ -51,9 +51,18 @@ class AdminMediaUploadView(views.APIView):
                 upload_result = cloudinary.uploader.upload(
                     uploaded_file,
                     folder='raj_portfolio',
-                    resource_type='auto'
+                    resource_type='auto',
+                    # Preserve maximum image quality – no lossy re-compression
+                    quality='auto:best',
+                    flags='attachment:false|preserve_transparency',
                 )
-                file_url = upload_result.get('secure_url', upload_result.get('url'))
+                # Build a high-quality delivery URL with q_auto:best transformation
+                raw_url = upload_result.get('secure_url', upload_result.get('url'))
+                # Insert q_auto:best,f_auto into the Cloudinary URL for optimal delivery
+                if '/upload/' in raw_url:
+                    file_url = raw_url.replace('/upload/', '/upload/q_auto:best,f_auto/')
+                else:
+                    file_url = raw_url
                 public_id = upload_result.get('public_id', '')
                 width = upload_result.get('width')
                 height = upload_result.get('height')
