@@ -33,6 +33,15 @@ export const adminApi = {
       method: "POST",
     }),
   getMe: () => fetchApi<ApiResponse<{ user: User }>>("/auth/me/"),
+  changePassword: (data: {
+    current_password?: string;
+    new_password: string;
+    confirm_password: string;
+  }) =>
+    fetchApi<ApiResponse<null>>("/auth/change-password/", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
 
   // Analytics Overview
   getAnalyticsOverview: () => fetchApi<ApiResponse<AnalyticsOverview>>("/admin/analytics/overview/"),

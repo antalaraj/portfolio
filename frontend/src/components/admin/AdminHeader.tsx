@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Menu, LogOut, ShieldCheck, User } from "lucide-react";
 import { adminApi } from "@/services/adminApi";
@@ -39,11 +40,15 @@ export function AdminHeader({ onToggleSidebar, title = "CMS Dashboard" }: AdminH
 
       <div className="flex items-center gap-4">
         {/* Superadmin badge */}
-        <div className="hidden sm:flex items-center gap-2 pl-3 py-1 pr-2 rounded-full bg-slate-50 border border-gray-200">
-          <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
-          <span className="text-xs font-semibold text-gray-800">Raj Antala</span>
-          <span className="text-[10px] text-slate-400 bg-slate-200 px-1.5 py-0.5 rounded">SuperAdmin</span>
-        </div>
+        <Link
+          href="/admin/security"
+          className="hidden sm:flex items-center gap-2 pl-3 py-1 pr-2 rounded-full bg-slate-50 border border-gray-200 hover:bg-blue-50/60 hover:border-blue-200 transition-colors group cursor-pointer"
+          title="SuperAdmin rights — Manage Security & Password"
+        >
+          <ShieldCheck className="w-3.5 h-3.5 text-blue-600 group-hover:scale-105 transition-transform" />
+          <span className="text-xs font-semibold text-gray-800 group-hover:text-blue-700">Raj Antala</span>
+          <span className="text-[10px] text-slate-500 bg-slate-200 group-hover:bg-blue-100 group-hover:text-blue-700 px-1.5 py-0.5 rounded font-medium">SuperAdmin</span>
+        </Link>
 
         {/* Logout */}
         <button

@@ -20,6 +20,7 @@ import {
   Mail,
   Search,
   Settings,
+  KeyRound,
   ExternalLink,
 } from "lucide-react";
 
@@ -48,6 +49,7 @@ export function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
     { label: "Contact Inbox", href: "/admin/contact", icon: Mail },
     { label: "SEO Manager", href: "/admin/seo", icon: Search },
     { label: "Site Settings", href: "/admin/settings", icon: Settings },
+    { label: "Security & Password", href: "/admin/security", icon: KeyRound },
   ];
 
   return (

@@ -586,7 +586,8 @@ class Command(BaseCommand):
         admin_user.is_staff = True
         admin_user.is_superuser = True
         admin_user.email = admin_email
-        admin_user.set_password(admin_password)
+        if created or not admin_user.has_usable_password():
+            admin_user.set_password(admin_password)
         admin_user.save()
 
         if created:

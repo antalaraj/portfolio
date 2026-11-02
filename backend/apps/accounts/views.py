@@ -1,9 +1,9 @@
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, update_session_auth_hash
 from django.middleware.csrf import get_token
 from rest_framework import status, views
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from .serializers import LoginSerializer, UserSerializer
+from .serializers import LoginSerializer, UserSerializer, ChangePasswordSerializer
 
 class CSRFTokenView(views.APIView):
     permission_classes = [AllowAny]
@@ -52,3 +52,23 @@ class CurrentUserView(views.APIView):
                 'user': UserSerializer(request.user).data
             }
         })
+
+class ChangePasswordView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = ChangePasswordSerializer(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+
+        new_password = serializer.validated_data['new_password']
+        user = request.user
+        user.set_password(new_password)
+        user.save()
+
+        # Update session auth hash so the admin user's cookie remains valid
+        update_session_auth_hash(request, user)
+
+        return Response({
+            'success': True,
+            'message': 'Password has been updated successfully.'
+        }, status=status.HTTP_200_OK)
