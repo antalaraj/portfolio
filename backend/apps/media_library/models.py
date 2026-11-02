@@ -3,7 +3,7 @@ from apps.core.models import TimeStampedUUIDModel
 
 class MediaAsset(TimeStampedUUIDModel):
     title = models.CharField(max_length=200)
-    file_url = models.URLField()
+    file_url = models.URLField(max_length=500)
     public_id = models.CharField(max_length=255, blank=True)
     file_type = models.CharField(max_length=50, default='image') # image, document, pdf
     file_size_bytes = models.PositiveIntegerField(default=0)

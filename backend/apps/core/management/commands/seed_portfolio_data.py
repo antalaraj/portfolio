@@ -553,57 +553,51 @@ class Command(BaseCommand):
         # 1. SUPER ADMIN ACCOUNT
         # ========================================================
 
-        admin_username = os.getenv(
-            "DJANGO_SUPERUSER_USERNAME",
+        admin_username = (
+            os.getenv("ADMIN_USERNAME") or
+            os.getenv("DJANGO_SUPERUSER_USERNAME") or
             "rajantala"
         )
 
-        admin_email = os.getenv(
-            "DJANGO_SUPERUSER_EMAIL",
+        admin_email = (
+            os.getenv("ADMIN_EMAIL") or
+            os.getenv("DJANGO_SUPERUSER_EMAIL") or
             EMAIL
         )
 
-        admin_password = os.getenv(
-            "DJANGO_SUPERUSER_PASSWORD"
+        admin_password = (
+            os.getenv("ADMIN_PASSWORD") or
+            os.getenv("DJANGO_SUPERUSER_PASSWORD") or
+            "RajPortfolio2026!"
         )
 
-        should_seed_admin = (
-            os.getenv("SEED_ADMIN", "false").lower() == "true" and
-            bool(admin_password)
+        admin_user, created = User.objects.get_or_create(
+            username=admin_username,
+            defaults={
+                "email": admin_email,
+                "first_name": "Antala",
+                "last_name": "Raj",
+                "is_staff": True,
+                "is_superuser": True
+            }
         )
 
-        if should_seed_admin:
-            admin_user, created = User.objects.get_or_create(
-                username=admin_username,
-                defaults={
-                    "email": admin_email,
-                    "first_name": "Antala",
-                    "last_name": "Raj",
-                    "is_staff": True,
-                    "is_superuser": True
-                }
+        admin_user.is_staff = True
+        admin_user.is_superuser = True
+        admin_user.email = admin_email
+        admin_user.set_password(admin_password)
+        admin_user.save()
+
+        if created:
+            self.stdout.write(
+                self.style.SUCCESS(
+                    f"[OK] SuperAdmin account '{admin_username}' created."
+                )
             )
-
-            if created:
-                admin_user.is_staff = True
-                admin_user.is_superuser = True
-                admin_user.set_password(admin_password)
-                admin_user.save()
-                self.stdout.write(
-                    self.style.SUCCESS(
-                        f"[OK] SuperAdmin account '{admin_username}' created."
-                    )
-                )
-            else:
-                self.stdout.write(
-                    self.style.SUCCESS(
-                        f"[OK] SuperAdmin account '{admin_username}' already exists. Preserving credentials."
-                    )
-                )
         else:
             self.stdout.write(
-                self.style.NOTICE(
-                    "[SKIP] SuperAdmin creation disabled."
+                self.style.SUCCESS(
+                    f"[OK] SuperAdmin account '{admin_username}' synchronized with configured credentials."
                 )
             )
 

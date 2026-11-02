@@ -40,27 +40,28 @@ class AdminMediaUploadView(views.APIView):
                 }
             }, status=status.HTTP_400_BAD_REQUEST)
 
-        title = request.data.get('title') or uploaded_file.name
-        content_type = uploaded_file.content_type
-        file_type = 'image' if content_type.startswith('image/') else 'document'
+        title = request.data.get('title') or getattr(uploaded_file, 'name', 'Uploaded File')
+        content_type = getattr(uploaded_file, 'content_type', '') or ''
+        is_image = bool(content_type and content_type.startswith('image/'))
+        file_type = 'image' if is_image else 'document'
+
+        file_url = None
+        public_id = ''
+        width, height = None, None
 
         # Check if Cloudinary is configured
         if getattr(settings, 'CLOUDINARY_CLOUD_NAME', None) and getattr(settings, 'CLOUDINARY_API_KEY', None):
             try:
                 import cloudinary.uploader
 
-                # Documents (PDF, DOC, etc.) must use resource_type='raw'
-                # so Cloudinary serves them with the correct MIME type.
-                # Images use 'image' with quality optimizations.
-                is_image = content_type.startswith('image/')
                 upload_kwargs = {
                     'folder': 'raj_portfolio',
                     'resource_type': 'image' if is_image else 'raw',
+                    'access_mode': 'public',
                 }
                 if is_image:
                     upload_kwargs.update({
                         'quality': 'auto:best',
-                        'flags': 'attachment:false|preserve_transparency',
                     })
 
                 upload_result = cloudinary.uploader.upload(
@@ -69,8 +70,6 @@ class AdminMediaUploadView(views.APIView):
                 )
                 raw_url = upload_result.get('secure_url', upload_result.get('url'))
 
-                # Apply quality transformations only for images; documents
-                # need the original URL for correct download behavior.
                 if is_image and '/upload/' in raw_url:
                     file_url = raw_url.replace('/upload/', '/upload/q_auto:best,f_auto/')
                 else:
@@ -80,31 +79,40 @@ class AdminMediaUploadView(views.APIView):
                 width = upload_result.get('width')
                 height = upload_result.get('height')
             except Exception as e:
-                return Response({
-                    'success': False,
-                    'error': {
-                        'code': 'CLOUDINARY_ERROR',
-                        'message': f'Failed to upload to Cloudinary: {str(e)}'
-                    }
-                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                # If Cloudinary upload fails, fallback to local storage so the user experience is uninterrupted
+                ext = os.path.splitext(getattr(uploaded_file, 'name', 'file.bin'))[1]
+                unique_name = f"{uuid.uuid4().hex}{ext}"
+                saved_path = default_storage.save(f"uploads/{unique_name}", uploaded_file)
+                file_url = request.build_absolute_uri(settings.MEDIA_URL + saved_path)
+                public_id = saved_path
+                width, height = None, None
         else:
-            # Local media fallback for development
-            ext = os.path.splitext(uploaded_file.name)[1]
+            # Local media fallback for offline / development
+            ext = os.path.splitext(getattr(uploaded_file, 'name', 'file.bin'))[1]
             unique_name = f"{uuid.uuid4().hex}{ext}"
             saved_path = default_storage.save(f"uploads/{unique_name}", uploaded_file)
             file_url = request.build_absolute_uri(settings.MEDIA_URL + saved_path)
             public_id = saved_path
             width, height = None, None
 
-        media_asset = MediaAsset.objects.create(
-            title=title,
-            file_url=file_url,
-            public_id=public_id,
-            file_type=file_type,
-            file_size_bytes=uploaded_file.size,
-            width=width,
-            height=height
-        )
+        try:
+            media_asset = MediaAsset.objects.create(
+                title=title[:200],
+                file_url=file_url,
+                public_id=public_id,
+                file_type=file_type,
+                file_size_bytes=getattr(uploaded_file, 'size', 0),
+                width=width,
+                height=height
+            )
+        except Exception as e:
+            return Response({
+                'success': False,
+                'error': {
+                    'code': 'ASSET_CREATION_FAILED',
+                    'message': f'Failed to record media asset: {str(e)}'
+                }
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response({
             'success': True,
