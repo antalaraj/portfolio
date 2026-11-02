@@ -19,11 +19,7 @@ import {
 } from "lucide-react";
 import { adminApi } from "@/services/adminApi";
 import { Profile } from "@/types";
-
-function resolveMediaUrl(url?: string): string {
-  if (!url) return "";
-  return url.replace(/^https?:\/\/(127\.0\.0\.1|localhost):8000(\/media\/.*)$/, "$2");
-}
+import { resolveMediaUrl } from "@/lib/utils";
 
 export default function AdminResumePage() {
   const [profile, setProfile] = useState<Partial<Profile>>({});

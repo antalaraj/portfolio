@@ -18,6 +18,7 @@ from apps.navigation.models import NavigationItem
 from apps.footer.models import FooterSetting
 from apps.seo.models import SEOMetadata
 from apps.site_settings.models import SiteSetting
+from apps.media_library.models import MediaAsset
 from apps.core.models import PublishableStatus
 
 User = get_user_model()
@@ -606,7 +607,15 @@ class Command(BaseCommand):
         # ========================================================
 
         # Deployment-safe: Never overwrite an existing profile, profile photos,
-        # resume URLs, or admin-panel modifications.
+        cloudinary_avatar = os.getenv(
+            "DEFAULT_AVATAR_URL",
+            "https://res.cloudinary.com/ukbouz8a/image/upload/q_auto:best,f_auto/v1793623101/raj_portfolio/jhkcbwghh2a3khx28cqu.jpg"
+        )
+        cloudinary_resume = os.getenv(
+            "DEFAULT_RESUME_URL",
+            "https://res.cloudinary.com/ukbouz8a/raw/upload/v1793623945/raj_portfolio/n2na6asajbtalc18dw88.pdf"
+        )
+
         profile = Profile.objects.first()
         if not profile:
             profile = Profile.objects.create(
@@ -660,22 +669,65 @@ class Command(BaseCommand):
                     "Opportunities"
                 ),
 
+                avatar_url=cloudinary_avatar,
+                resume_file_url=cloudinary_resume,
+
                 experience_badge_title="",
                 experience_badge_subtitle="",
                 show_experience_badge=False
             )
             self.stdout.write(
                 self.style.SUCCESS(
-                    "[OK] Personal Profile record created with defaults."
+                    "[OK] Personal Profile record created with defaults and Cloudinary assets."
                 )
             )
         else:
-            self.stdout.write(
-                self.style.SUCCESS(
-                    f"[OK] Existing Personal Profile preserved ('{profile.full_name}'). "
-                    f"Photo: {'Configured' if profile.avatar_url else 'None'}, "
-                    f"Resume: {'Configured' if profile.resume_file_url else 'None'}."
+            # If profile currently points to old non-persistent local/render media URLs, upgrade to Cloudinary
+            updated_urls = False
+            if not profile.avatar_url or "localhost" in profile.avatar_url or "127.0.0.1" in profile.avatar_url or "onrender.com/media" in profile.avatar_url:
+                profile.avatar_url = cloudinary_avatar
+                updated_urls = True
+            if not profile.resume_file_url or "localhost" in profile.resume_file_url or "127.0.0.1" in profile.resume_file_url or "onrender.com/media" in profile.resume_file_url:
+                profile.resume_file_url = cloudinary_resume
+                updated_urls = True
+            if updated_urls:
+                profile.save()
+                self.stdout.write(
+                    self.style.SUCCESS(
+                        "[OK] Profile avatar and resume upgraded to persistent Cloudinary CDN URLs."
+                    )
                 )
+            else:
+                self.stdout.write(
+                    self.style.SUCCESS(
+                        f"[OK] Existing Personal Profile preserved ('{profile.full_name}'). "
+                        f"Photo: {'Configured' if profile.avatar_url else 'None'}, "
+                        f"Resume: {'Configured' if profile.resume_file_url else 'None'}."
+                    )
+                )
+
+        # Migrate any MediaAsset records pointing to ephemeral onrender.com/media or localhost URLs
+        for asset in MediaAsset.objects.filter(file_url__contains="/media/uploads/"):
+            if "resume" in asset.title.lower() or asset.file_type == "document":
+                asset.file_url = cloudinary_resume
+                asset.save()
+            elif "avatar" in asset.title.lower() or "photo" in asset.title.lower() or "raj" in asset.title.lower():
+                asset.file_url = cloudinary_avatar
+                asset.save()
+
+        if not MediaAsset.objects.filter(file_url=cloudinary_avatar).exists():
+            MediaAsset.objects.create(
+                file_url=cloudinary_avatar,
+                title="Antala Raj Avatar",
+                public_id="raj_portfolio/jhkcbwghh2a3khx28cqu",
+                file_type="image",
+            )
+        if not MediaAsset.objects.filter(file_url=cloudinary_resume).exists():
+            MediaAsset.objects.create(
+                file_url=cloudinary_resume,
+                title="Antala Raj_resume",
+                public_id="raj_portfolio/n2na6asajbtalc18dw88.pdf",
+                file_type="document",
             )
 
         # ========================================================

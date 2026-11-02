@@ -4,14 +4,10 @@ import { Footer } from "@/components/public/Footer";
 import { PdfDocumentViewer } from "@/components/public/PdfDocumentViewer";
 import Link from "next/link";
 import { ArrowLeft, Download, ExternalLink, FileText, Sparkles } from "lucide-react";
+import { resolveMediaUrl } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
-
-function resolveMediaUrl(url?: string): string {
-  if (!url) return "";
-  return url.replace(/^https?:\/\/(127\.0\.0\.1|localhost):8000(\/media\/.*)$/, "$2");
-}
 
 export default async function ResumePage() {
   const [profile, navItems, footerSetting] = await Promise.all([
